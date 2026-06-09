@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>French Translation Checklist</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #0d1117;
+    color: #c9d1d9;
+    padding: 24px;
+    min-height: 100vh;
+  }
+  h1 { text-align: center; font-size: 1.4rem; margin-bottom: 6px; color: #e6edf3; }
+  .subtitle { text-align: center; font-size: 0.82rem; color: #6e7681; margin-bottom: 20px; }
+
+  .legend {
+    display: flex; gap: 18px; margin-bottom: 18px; flex-wrap: wrap; justify-content: center;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; color: #8b949e; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+
+  .stats-bar {
+    display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+    margin-bottom: 22px; font-size: 0.82rem;
+  }
+  .stats-bar span {
+    padding: 3px 12px; border-radius: 20px; background: #161b22; border: 1px solid #30363d;
+  }
+  .s-done  { color: #3fb950; border-color: #2ea04388 !important; }
+  .s-fail  { color: #f85149; border-color: #f8514966 !important; }
+  .s-howto { color: #e3a030; border-color: #e3a03066 !important; }
+  .s-blank { color: #6e7681; }
+
+  .toolbar {
+    display: flex; gap: 8px; margin-bottom: 22px; flex-wrap: wrap; align-items: center;
+    justify-content: center;
+  }
+  .toolbar input[type=text] {
+    padding: 6px 12px; border-radius: 6px; border: 1px solid #30363d;
+    background: #161b22; color: #c9d1d9; font-size: 0.85rem; width: 220px;
+  }
+  .toolbar input[type=text]::placeholder { color: #484f58; }
+  .btn {
+    padding: 6px 14px; border-radius: 6px; border: 1px solid #30363d;
+    cursor: pointer; font-size: 0.82rem; background: #21262d; color: #c9d1d9;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .btn:hover { background: #30363d; border-color: #8b949e; }
+  .btn-primary { background: #238636; border-color: #2ea043; color: #fff; }
+  .btn-primary:hover { background: #2ea043; }
+
+  .section { margin-bottom: 28px; }
+  .section-header {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 1.2px;
+    text-transform: uppercase; color: #484f58; padding: 6px 0 8px;
+    border-bottom: 1px solid #21262d; margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-badge {
+    font-size: 0.68rem; background: #161b22; border: 1px solid #30363d;
+    border-radius: 10px; padding: 1px 7px; color: #6e7681; font-weight: 400;
+  }
+
+  .item {
+    display: flex; align-items: flex-start; gap: 0;
+    border-left: 3px solid transparent;
+    background: #0d1117; border-bottom: 1px solid #161b22;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .item:hover { background: #161b22; }
+  .item.blank  { border-left-color: #30363d; }
+  .item.done   { border-left-color: #2ea043; background: #0a1f0d; }
+  .item.done:hover { background: #0d2610; }
+  .item.fail   { border-left-color: #da3633; background: #1f0a0a; }
+  .item.fail:hover { background: #261010; }
+  .item.howto  { border-left-color: #9e6a03; background: #1a1400; }
+  .item.howto:hover { background: #1f1900; }
+
+  .item-main {
+    flex: 1; padding: 8px 10px; min-width: 0;
+  }
+  .key-label {
+    font-size: 0.72rem; color: #484f58; font-family: monospace; margin-bottom: 2px;
+  }
+  .phrase {
+    font-size: 0.88rem; word-break: break-word; line-height: 1.4;
+  }
+  .item.blank  .phrase { color: #6e7681; }
+  .item.done   .phrase { color: #3fb950; }
+  .item.fail   .phrase { color: #f85149; }
+  .item.howto  .phrase { color: #d29922; }
+
+  .item-controls {
+    display: flex; align-items: center; gap: 4px; padding: 8px 8px 8px 0; flex-shrink: 0;
+  }
+  .status-btn {
+    padding: 3px 8px; border-radius: 4px; border: 1px solid #30363d;
+    cursor: pointer; font-size: 0.72rem; background: #161b22; color: #8b949e;
+    transition: all 0.15s; white-space: nowrap;
+  }
+  .status-btn:hover { border-color: #8b949e; color: #c9d1d9; }
+  .status-btn.active-done   { background: #0d3320; border-color: #2ea043; color: #3fb950; }
+  .status-btn.active-fail   { background: #3d0c0c; border-color: #da3633; color: #f85149; }
+  .status-btn.active-howto  { background: #2d1f00; border-color: #9e6a03; color: #d29922; }
+  .status-btn.active-blank  { background: #21262d; border-color: #484f58; color: #6e7681; }
+
+  .comment-wrap { padding: 0 10px 8px 10px; display: none; }
+  .comment-wrap.visible { display: block; }
+  .comment-input {
+    width: 100%; padding: 6px 10px; border-radius: 5px;
+    border: 1px solid #da363366; background: #1f0a0a;
+    color: #f88; font-size: 0.82rem; resize: vertical;
+    min-height: 44px; font-family: inherit;
+  }
+  .comment-input::placeholder { color: #7a3535; }
+
+  .filter-bar {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; align-items: center;
+  }
+  .filter-bar label { font-size: 0.8rem; color: #6e7681; }
+  .filter-btn {
+    padding: 3px 10px; border-radius: 12px; border: 1px solid #30363d;
+    cursor: pointer; font-size: 0.78rem; background: #161b22; color: #8b949e;
+    transition: all 0.15s;
+  }
+  .filter-btn.active { border-color: #58a6ff; color: #58a6ff; background: #0d2d6e33; }
+  .filter-btn:hover { border-color: #8b949e; }
+
+  .hidden-item { display: none !important; }
+  .hidden-section .section-header { opacity: 0.4; }
+
+  #searchBox { width: 200px; }
+</style>
+</head>
+<body>
+
+<h1>French Translation Checklist</h1>
+<p class="subtitle">Click a status button on any row to update it. Fail rows show a comment field.</p>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#2ea043"></div>Done</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#f85149"></div>Fail</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#d29922"></div>How to test</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#30363d"></div>Blank / Not tested</div>
+</div>
+
+<div class="stats-bar" id="statsBar"></div>
+
+<div class="toolbar">
+  <input type="text" id="searchBox" placeholder="Search phrases..." oninput="applyFilters()" />
+  <button class="btn btn-primary" onclick="exportData()">Export JSON</button>
+  <button class="btn" onclick="importClick()">Import JSON</button>
+  <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)"/>
+</div>
+
+<div class="filter-bar">
+  <label>Filter:</label>
+  <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">All</button>
+  <button class="filter-btn" data-filter="blank" onclick="setFilter('blank',this)">Blank</button>
+  <button class="filter-btn" data-filter="done" onclick="setFilter('done',this)">Done</button>
+  <button class="filter-btn" data-filter="fail" onclick="setFilter('fail',this)">Fail</button>
+  <button class="filter-btn" data-filter="howto" onclick="setFilter('howto',this)">How to test</button>
+</div>
+
+<div id="checklist"></div>
+
+<script>
+const SECTIONS = [
+  { id: "common", label: "Common", items: [
+    { key: "done", phrase: "Fait", status: "done", comment: "" },
+    { key: "cancel", phrase: "Annuler", status: "done", comment: "" },
+    { key: "ok", phrase: "OK", status: "done", comment: "" },
+    { key: "yes", phrase: "Oui", status: "done", comment: "" },
+    { key: "no", phrase: "Non", status: "done", comment: "" },
+    { key: "retry", phrase: "Réessayer", status: "done", comment: "" },
+    { key: "settings", phrase: "Paramètres", status: "blank", comment: "" },
+    { key: "ignore", phrase: "Ignorer", status: "done", comment: "" },
+    { key: "confirm", phrase: "Confirmer", status: "blank", comment: "" },
+    { key: "campus", phrase: "Campus", status: "blank", comment: "" },
+    { key: "venue", phrase: "Lieu", status: "blank", comment: "" },
+    { key: "venues", phrase: "Lieux", status: "blank", comment: "" },
+    { key: "floors", phrase: "Étages", status: "done", comment: "" },
+    { key: "floor", phrase: "Étage", status: "done", comment: "" },
+    { key: "meter", phrase: "m", status: "done", comment: "" },
+    { key: "loading", phrase: "Chargement...", status: "done", comment: "" },
+    { key: "back", phrase: "Retour", status: "done", comment: "" },
+    { key: "remove", phrase: "Supprimer", status: "blank", comment: "" },
+  ]},
+  { id: "auth", label: "Auth", items: [
+    { key: "login", phrase: "Connexion", status: "done", comment: "" },
+    { key: "loginUsername", phrase: "Nom d'utilisateur ou E-mail", status: "done", comment: "" },
+    { key: "password", phrase: "Mot de passe", status: "done", comment: "" },
+    { key: "emailInvalid", phrase: "Nom d'utilisateur ou e-mail invalide", status: "fail", comment: "" },
+    { key: "passwordInvalid", phrase: "Mot de passe invalide", status: "fail", comment: "" },
+    { key: "selectCampus", phrase: "Sélectionnez Votre Campus", status: "done", comment: "" },
+    { key: "changeCampus", phrase: "Sélectionner Campus", status: "done", comment: "" },
+    { key: "noCampusDetails", phrase: "Aucun détail de campus trouvé pour ce client. Veuillez contacter l'équipe d'assistance.", status: "howto", comment: "" },
+    { key: "invalidCampusId", phrase: "ID de Campus invalide. Veuillez entrer un ID de Campus valide.", status: "howto", comment: "" },
+    { key: "guestLogin", phrase: "Se connecter en tant qu'invité", status: "done", comment: "" },
+    { key: "qrCode", phrase: "Code QR", status: "done", comment: "" },
+    { key: "scanQrCode", phrase: "Scanner le code QR", status: "done", comment: "" },
+    { key: "errorQrCode", phrase: "erreur dans le code Qr", status: "howto", comment: "" },
+    { key: "termsPrivacy", phrase: "Conditions de Service et Politique de Confidentialité", status: "done", comment: "" },
+  ]},
+  { id: "messages", label: "Messages", items: [
+    { key: "notFound", phrase: "Non trouvé", status: "blank", comment: "" },
+    { key: "featureTypeNotFound", phrase: "Type de fonctionnalité non trouvé", status: "blank", comment: "" },
+    { key: "serviceNotAvailable", phrase: "Service Indisponible", status: "blank", comment: "" },
+    { key: "serviceNotAvailableSubtext", phrase: "Le service est actuellement indisponible. Veuillez réessayer plus tard.", status: "blank", comment: "" },
+    { key: "connectionError", phrase: "Erreur de Connexion", status: "blank", comment: "" },
+    { key: "errorRetrievingData", phrase: "Erreur lors de la récupération des données", status: "blank", comment: "" },
+    { key: "routeNotDetected", phrase: "L'itinéraire n'a pas encore été détecté", status: "blank", comment: "" },
+    { key: "errorWhileDetection", phrase: "Erreur lors de la détection de l'itinéraire", status: "blank", comment: "" },
+    { key: "permissionDenied", phrase: "Erreur: un ou plusieurs autorisations requises telles que la localisation et Bluetooth ne sont pas accordées.", status: "blank", comment: "" },
+    { key: "noDirectionFromLocation", phrase: "Les directions ne sont plus disponibles de votre emplacement", status: "done", comment: "" },
+  ]},
+  { id: "toast", label: "Toast", items: [
+    { key: "switchToMobileData", phrase: "Passer aux données mobiles", status: "done", comment: "" },
+    { key: "switchToMobileDataPopup", phrase: "Pour une meilleure précision de positionnement nous vous recommandons de passer à une connexion de données mobiles.", status: "done", comment: "" },
+    { key: "connectionError", phrase: "Erreur de Connexion", status: "blank", comment: "" },
+    { key: "connectionErrorPopup", phrase: "Une erreur s'est produite lors de la connexion au serveur.", status: "blank", comment: "" },
+    { key: "locationServicesOff", phrase: "Services de localisation désactivés", status: "blank", comment: "" },
+    { key: "locationServicesOffPopup", phrase: "Vous pouvez atteindre votre destination estimer les temps de trajet et améliorer les résultats de recherche lorsque vous activez les services de localisation.", status: "blank", comment: "" },
+    { key: "bluetoothServicesOff", phrase: "Services Bluetooth désactivés", status: "fail", comment: "" },
+    { key: "bluetoothServicesOffPopup", phrase: "Vous obtiendrez des indications virage par virage des temps de trajet estimés et des résultats de recherche améliorés lorsque vous activez les services Bluetooth.", status: "done", comment: "" },
+  ]},
+  { id: "exploration", label: "Exploration", items: [
+    { key: "home", phrase: "Accueil", status: "howto", comment: "" },
+    { key: "directory", phrase: "Annuaire", status: "done", comment: "" },
+    { key: "directoryTitle", phrase: "Annuaire", status: "blank", comment: "" },
+    { key: "favorites", phrase: "Favoris", status: "done", comment: "" },
+    { key: "myLocation", phrase: "Ma Position", status: "done", comment: "" },
+    { key: "search", phrase: "Rechercher", status: "done", comment: "" },
+    { key: "seeAll", phrase: "Voir tout", status: "done", comment: "" },
+    { key: "shareMyLocation", phrase: "Partager ma Position", status: "done", comment: "" },
+    { key: "markMyLocationAsParking", phrase: "Marquer ma position comme parking", status: "done", comment: "" },
+    { key: "markAsParking", phrase: "Marquer comme parking", status: "done", comment: "" },
+    { key: "currentLocation", phrase: "Ceci est ma position actuelle", status: "done", comment: "" },
+  ]},
+  { id: "sheets", label: "Sheets", items: [
+    { key: "directions", phrase: "Directions", status: "done", comment: "" },
+    { key: "distance", phrase: "Distance", status: "done", comment: "" },
+    { key: "address", phrase: "Adresse", status: "done", comment: "" },
+    { key: "operatingHours", phrase: "Heures d'ouverture", status: "howto", comment: "" },
+    { key: "hours", phrase: "Heures", status: "done", comment: "" },
+    { key: "open", phrase: "Ouvert", status: "done", comment: "" },
+    { key: "closed", phrase: "Fermé", status: "done", comment: "" },
+    { key: "opens", phrase: "Ouvre", status: "done", comment: "" },
+    { key: "closedToday", phrase: "Fermé Aujourd'hui", status: "done", comment: "" },
+    { key: "goodToKnow", phrase: "À Savoir", status: "done", comment: "" },
+    { key: "amenities", phrase: "Équipements", status: "blank", comment: "" },
+    { key: "more", phrase: "Plus", status: "done", comment: "" },
+    { key: "contacts", phrase: "Contacts", status: "done", comment: "" },
+    { key: "about", phrase: "À Propos", status: "done", comment: "" },
+    { key: "addToFavorites", phrase: "Ajouter aux Favoris", status: "done", comment: "" },
+    { key: "removeFromFavorites", phrase: "Supprimer des Favoris", status: "done", comment: "" },
+    { key: "details", phrase: "Détails", status: "done", comment: "" },
+    { key: "website", phrase: "Site Web", status: "done", comment: "" },
+    { key: "mail", phrase: "Courrier", status: "done", comment: "" },
+    { key: "phone", phrase: "Téléphone", status: "done", comment: "" },
+    { key: "call", phrase: "Appeler", status: "done", comment: "" },
+    { key: "email", phrase: "E-mail", status: "done", comment: "" },
+    { key: "reportAnIssue", phrase: "Signaler un Problème", status: "done", comment: "" },
+  ]},
+  { id: "floorSelector", label: "Floor Selector", items: [
+    { key: "chooseAFloor", phrase: "Choisir un Étage", status: "done", comment: "" },
+    { key: "selectedVenue", phrase: "Lieu Sélectionné", status: "done", comment: "" },
+    { key: "floorMaps", phrase: "Plans d'étage", status: "howto", comment: "" },
+    { key: "changingFloor", phrase: "Changement d'étage", status: "howto", comment: "" },
+    { key: "connectedVenues", phrase: "Lieux Connectés", status: "howto", comment: "" },
+  ]},
+  { id: "categorysheet", label: "Category Sheet", items: [
+    { key: "noPlaces", phrase: "Aucun lieu dans cette catégorie à cet endroit", status: "done", comment: "" },
+    { key: "noPoi", phrase: "Vérifiez d'autres emplacements pour trouver des lieux", status: "howto", comment: "" },
+    { key: "title", phrase: "Catégories", status: "howto", comment: "" },
+    { key: "empty", phrase: "Aucun lieu dans cette catégorie à cet endroit", status: "howto", comment: "" },
+    { key: "emptyExplore", phrase: "Essayez d'explorer d'autres lieux pour trouver des places", status: "howto", comment: "" },
+  ]},
+  { id: "directionsSheet", label: "Directions Sheet", items: [
+    { key: "myLocation", phrase: "Ma Position", status: "done", comment: "" },
+    { key: "addParking", phrase: "Ajouter un Parking", status: "blank", comment: "" },
+    { key: "addStop", phrase: "Ajouter un Arrêt", status: "done", comment: "" },
+    { key: "addingParking", phrase: "Recherche de Parking en cours", status: "blank", comment: "" },
+    { key: "parkingUnavailable", phrase: "Le parking est actuellement indisponible. Veuillez réessayer bientôt", status: "blank", comment: "" },
+    { key: "parkingSave", phrase: "Souhaitez-vous enregistrer votre emplacement de parking?", status: "blank", comment: "" },
+    { key: "bestRouteShown", phrase: "Meilleur itinéraire affiché. Pas toutes les préférences ne sont satisfaites.", status: "blank", comment: "" },
+    { key: "go", phrase: "Aller", status: "done", comment: "" },
+    { key: "preview", phrase: "Aperçu", status: "blank", comment: "" },
+    { key: "directionsNotAvailable", phrase: "Directions Indisponibles", status: "done", comment: "" },
+    { key: "directionsNotAvailableFromLocation", phrase: "Les directions ne sont pas disponibles à partir de cet emplacement", status: "done", comment: "" },
+    { key: "changeAvoidanceOptions", phrase: "Modifiez les options d'évitement pour obtenir les directions", status: "blank", comment: "" },
+    { key: "endTrip", phrase: "Terminer le Voyage", status: "blank", comment: "" },
+  ]},
+  { id: "stopSheet", label: "Stop Sheet", items: [
+    { key: "stopReached", phrase: "Arrêt (%s) Atteint", status: "blank", comment: "" },
+    { key: "stops", phrase: "Arrêts", status: "blank", comment: "" },
+    { key: "addStop", phrase: "Ajouter un Arrêt", status: "done", comment: "" },
+    { key: "changeStop", phrase: "Changer l'Arrêt", status: "done", comment: "" },
+    { key: "resultStations", phrase: "Résultats", status: "blank", comment: "" },
+    { key: "addStartStation", phrase: "Choisir la gare de départ", status: "blank", comment: "" },
+  ]},
+  { id: "parking", label: "Parking", items: [
+    { key: "header", phrase: "Voiture Stationnée", status: "blank", comment: "" },
+    { key: "location", phrase: "Ceci est mon emplacement de parking", status: "blank", comment: "" },
+    { key: "delete", phrase: "Effacer le Parking", status: "blank", comment: "" },
+    { key: "timeHead", phrase: "Temps de parking", status: "blank", comment: "" },
+    { key: "parking", phrase: "Parking", status: "blank", comment: "" },
+    { key: "reached", phrase: "Parking Atteint", status: "blank", comment: "" },
+    { key: "secAgo", phrase: "à l'instant", status: "blank", comment: "" },
+    { key: "available", phrase: "Le parking est actuellement indisponible. Vous serez dirigé directement vers votre destination", status: "blank", comment: "" },
+    { key: "noAvailable", phrase: "Aucun Parking Disponible", status: "blank", comment: "" },
+    { key: "tapContinue", phrase: "Tapez \"Continuer\" une fois que vous avez terminé le stationnement", status: "blank", comment: "" },
+  ]},
+  { id: "navigationSheet", label: "Navigation Sheet", items: [
+    { key: "feedback.feedback", phrase: "Avis", status: "done", comment: "" },
+    { key: "feedback.title", phrase: "Destination Atteinte!", status: "done", comment: "" },
+    { key: "feedback.subtitle", phrase: "Vous êtes arrivé à {destination}", status: "done", comment: "" },
+    { key: "feedback.helpText", phrase: "Aidez-nous à améliorer nos services. Comment s'est déroulée la navigation lors de ce trajet?", status: "howto", comment: "" },
+    { key: "feedback.done", phrase: "Fait", status: "done", comment: "" },
+    { key: "feedback.cancel", phrase: "Annuler", status: "done", comment: "" },
+    { key: "feedback.describeIssue", phrase: "Décrivez votre problème avec la navigation lors de ce voyage", status: "done", comment: "" },
+    { key: "feedback.enterReason", phrase: "Entrez votre raison", status: "done", comment: "" },
+    { key: "min", phrase: "min", status: "done", comment: "" },
+    { key: "arrival", phrase: "Arrivée", status: "done", comment: "" },
+  ]},
+  { id: "navigationScreen", label: "Navigation Screen", items: [
+    { key: "meter", phrase: "m", status: "blank", comment: "" },
+    { key: "share", phrase: "Partager", status: "blank", comment: "" },
+    { key: "destinationReached", phrase: "Destination atteinte", status: "blank", comment: "" },
+    { key: "exit", phrase: "Quitter", status: "blank", comment: "" },
+    { key: "estTime", phrase: "min", status: "blank", comment: "" },
+    { key: "destTime", phrase: "%d m", status: "blank", comment: "" },
+    { key: "continue", phrase: "Continuer %s", status: "blank", comment: "" },
+    { key: "arrivedAt", phrase: "Vous êtes arrivé à %s", status: "blank", comment: "" },
+    { key: "arrivalTime", phrase: "arrivée", status: "blank", comment: "" },
+    { key: "distanceLabel", phrase: "mètre", status: "blank", comment: "" },
+    { key: "timeRemaining", phrase: "min", status: "blank", comment: "" },
+    { key: "recalculate", phrase: "Recalculer", status: "blank", comment: "" },
+  ]},
+  { id: "avoidSheet", label: "Avoid Sheet", items: [
+    { key: "avoid", phrase: "Éviter", status: "done", comment: "" },
+    { key: "avoidNum", phrase: "Éviter (%s)", status: "done", comment: "" },
+    { key: "avoidStairs", phrase: "Éviter les Escaliers", status: "done", comment: "" },
+    { key: "avoidRamps", phrase: "Éviter les Rampes", status: "done", comment: "" },
+    { key: "avoidEscalators", phrase: "Éviter les Escaliers Roulants", status: "done", comment: "" },
+    { key: "avoidElevators", phrase: "Éviter les Ascenseurs", status: "done", comment: "" },
+    { key: "avoidOutdoor", phrase: "Éviter Extérieur", status: "done", comment: "" },
+    { key: "avoidIndoor", phrase: "Éviter Intérieur", status: "done", comment: "" },
+    { key: "apply", phrase: "Appliquer", status: "done", comment: "" },
+    { key: "cancel", phrase: "Annuler", status: "done", comment: "" },
+  ]},
+  { id: "transportationMode", label: "Transportation Mode", items: [
+    { key: "walk", phrase: "Marche à Pied", status: "done", comment: "" },
+    { key: "car", phrase: "Voiture", status: "done", comment: "" },
+    { key: "transit", phrase: "Transport en Commun", status: "done", comment: "" },
+    { key: "cycle", phrase: "Vélo", status: "done", comment: "" },
+    { key: "ride", phrase: "Trajet", status: "done", comment: "" },
+    { key: "drive", phrase: "Conduire", status: "done", comment: "" },
+  ]},
+  { id: "searchSheet", label: "Search Sheet", items: [
+    { key: "searching", phrase: "Recherche en cours...", status: "done", comment: "" },
+    { key: "noSearchFirstLine", phrase: "Aucun lieu correspondant trouvé", status: "blank", comment: "" },
+    { key: "noSearchSecondLine", phrase: "Essayez de chercher un autre terme", status: "blank", comment: "" },
+    { key: "clear", phrase: "Effacer", status: "done", comment: "" },
+    { key: "openNow", phrase: "Ouvert Maintenant", status: "done", comment: "" },
+    { key: "categories", phrase: "Catégories", status: "done", comment: "" },
+    { key: "amenities", phrase: "Équipements", status: "done", comment: "" },
+    { key: "sortByDistance", phrase: "Trier par Distance", status: "done", comment: "" },
+    { key: "sortByMatch", phrase: "Trier par Meilleure Correspondance", status: "blank", comment: "" },
+    { key: "filter", phrase: "Filtrer", status: "done", comment: "" },
+    { key: "bestMatch", phrase: "Meilleure Correspondance", status: "done", comment: "" },
+    { key: "apply", phrase: "Appliquer", status: "done", comment: "" },
+    { key: "popular", phrase: "Populaire", status: "done", comment: "" },
+    { key: "nearby", phrase: "À Proximité", status: "done", comment: "" },
+  ]},
+  { id: "navigationInstructions", label: "Navigation Instructions", items: [
+    { key: "goStraight", phrase: "Allez Tout Droit", status: "blank", comment: "" },
+    { key: "goBackwards", phrase: "Demi-tour et continuez", status: "blank", comment: "" },
+    { key: "turnRight", phrase: "Tournez à Droite", status: "blank", comment: "" },
+    { key: "turnLeft", phrase: "Tournez à Gauche", status: "blank", comment: "" },
+    { key: "slightTurnRight", phrase: "Léger virage à droite", status: "blank", comment: "" },
+    { key: "slightTurnLeft", phrase: "Léger virage à gauche", status: "blank", comment: "" },
+    { key: "sharpRight", phrase: "Virage serré à droite", status: "blank", comment: "" },
+    { key: "sharpLeft", phrase: "Virage serré à gauche", status: "blank", comment: "" },
+    { key: "goAhead", phrase: "Continuez", status: "blank", comment: "" },
+    { key: "destReach", phrase: "pour atteindre la destination", status: "blank", comment: "" },
+    { key: "distanceInst", phrase: "pour %s mètres", status: "blank", comment: "" },
+    { key: "destReachInst", phrase: "Allez tout droit pour atteindre la destination", status: "blank", comment: "" },
+  ]},
+  { id: "sharing", label: "Sharing", items: [
+    { key: "from", phrase: "De %s à %s", status: "blank", comment: "" },
+    { key: "timeAndMode", phrase: "%s minutes en %s", status: "blank", comment: "" },
+    { key: "asText", phrase: "Sous forme de texte", status: "blank", comment: "" },
+    { key: "asPdf", phrase: "Sous forme de PDF", status: "blank", comment: "" },
+    { key: "sharedRoute", phrase: "Itinéraire partagé:", status: "blank", comment: "" },
+    { key: "sharedLocation", phrase: "Emplacement Partagé", status: "blank", comment: "" },
+    { key: "sharedLocationDetails", phrase: "Détails", status: "blank", comment: "" },
+  ]},
+  { id: "permissions", label: "Permissions", items: [
+    { key: "bluetoothAccess", phrase: "Cette application a besoin d'accéder à votre localisation et Bluetooth pour fonctionner correctement", status: "blank", comment: "" },
+    { key: "goToSettings", phrase: "Veuillez aller aux paramètres de l'application pour accorder ces autorisations.", status: "blank", comment: "" },
+    { key: "settings", phrase: "Aller aux paramètres", status: "blank", comment: "" },
+    { key: "gpsDisabled", phrase: "Le GPS est désactivé sur votre appareil. Voulez-vous l'activer?", status: "blank", comment: "" },
+    { key: "enable", phrase: "Activer", status: "blank", comment: "" },
+    { key: "bluetoothDisabled", phrase: "Le Bluetooth est désactivé sur votre appareil. Voulez-vous l'activer?", status: "blank", comment: "" },
+    { key: "grant", phrase: "Accorder", status: "blank", comment: "" },
+    { key: "geofenceAlert", phrase: "Cette application utilise le géofencing pour envoyer des alertes et des offres personnalisées basées sur votre localisation.", status: "blank", comment: "" },
+    { key: "later", phrase: "Plus tard", status: "blank", comment: "" },
+    { key: "locationOff.title", phrase: "Services de localisation désactivés", status: "fail", comment: "" },
+    { key: "locationOff.subtitle", phrase: "Obtenir des directions lorsque les services de localisation sont activés.", status: "done", comment: "" },
+    { key: "locationOff.message", phrase: "Vous pouvez atteindre votre destination estimer les temps de trajet et améliorer les résultats de recherche lorsque vous activez les services de localisation.", status: "done", comment: "" },
+    { key: "locationOff.btnYes", phrase: "Activer dans les Paramètres", status: "done", comment: "" },
+    { key: "locationOff.btnNo", phrase: "Garder les Services de Localisation Désactivés", status: "done", comment: "" },
+    { key: "bluetoothOff.title", phrase: "Services Bluetooth désactivés", status: "fail", comment: "" },
+    { key: "bluetoothOff.subtitle", phrase: "PenNav fonctionne mieux avec les services Bluetooth activés.", status: "done", comment: "" },
+    { key: "bluetoothOff.message", phrase: "Vous obtiendrez des indications virage par virage des temps de trajet estimés et des résultats de recherche améliorés lorsque vous activez les services Bluetooth.", status: "done", comment: "" },
+    { key: "bluetoothOff.btnYes", phrase: "Activer dans les Paramètres", status: "done", comment: "" },
+    { key: "bluetoothOff.btnNo", phrase: "Garder les Services Bluetooth Désactivés", status: "done", comment: "" },
+    { key: "uncoveredArea.title", phrase: "Précision de localisation limitée", status: "blank", comment: "" },
+    { key: "uncoveredArea.message", phrase: "La précision de la navigation peut être limitée dans votre région.", status: "blank", comment: "" },
+    { key: "uncoveredArea.btn", phrase: "D'accord", status: "blank", comment: "" },
+    { key: "findingLocation.title", phrase: "Emplacement perdu", status: "done", comment: "" },
+    { key: "findingLocation.message", phrase: "Il semble y avoir un problème pour détecter votre emplacement", status: "done", comment: "" },
+    { key: "findingLocation.btnRetry", phrase: "Réessayer", status: "done", comment: "" },
+    { key: "findingLocation.btnContinue", phrase: "Continuer sans localisation", status: "done", comment: "" },
+    { key: "findingLocation.btnOk", phrase: "OK", status: "fail", comment: "" },
+  ]},
+  { id: "geofence", label: "Geofence", items: [
+    { key: "startGeofence", phrase: "Démarrer Geofence", status: "blank", comment: "" },
+    { key: "startedGeofence", phrase: "Geofence Démarré", status: "blank", comment: "" },
+    { key: "failedStart", phrase: "Geofence n'a pas pu démarrer", status: "blank", comment: "" },
+    { key: "stopGeofence", phrase: "Arrêter Geofence", status: "blank", comment: "" },
+    { key: "stoppedGeofence", phrase: "Geofence Arrêté", status: "blank", comment: "" },
+    { key: "updateGeofence", phrase: "Mettre à Jour Geofence", status: "blank", comment: "" },
+    { key: "updatedGeofence", phrase: "Geofence Mis à Jour", status: "blank", comment: "" },
+    { key: "geofence", phrase: "Geofence", status: "blank", comment: "" },
+    { key: "indoorError", phrase: "Le géofencing ne s'applique pas aux déploiements intérieurs", status: "blank", comment: "" },
+    { key: "startBeforeUpdate", phrase: "Erreur: Veuillez démarrer le SDK geofence avant d'appeler update", status: "blank", comment: "" },
+    { key: "alreadyRunning", phrase: "Le SDK Geofence est déjà en cours d'exécution. Veuillez appeler updateGeofencing pour mettre à jour les données", status: "blank", comment: "" },
+  ]},
+  { id: "ar", label: "AR", items: [
+    { key: "ar", phrase: "AR", status: "blank", comment: "" },
+    { key: "cameraNeeded", phrase: "Accès à la Caméra Requis", status: "blank", comment: "" },
+    { key: "enableCamera", phrase: "Activez l'accès à la caméra pour activer la navigation AR", status: "blank", comment: "" },
+    { key: "3d", phrase: "3D", status: "blank", comment: "" },
+    { key: "2d", phrase: "2D", status: "blank", comment: "" },
+  ]},
+  { id: "misc", label: "Misc", items: [
+    { key: "calibrate", phrase: "Calibrez votre compas à points bleus à tout moment", status: "blank", comment: "" },
+    { key: "tiltInfo", phrase: "inclinez et déplacez votre téléphone trois fois comme ceci:", status: "blank", comment: "" },
+    { key: "welcome", phrase: "Pour la meilleure expérience en utilisant cette fonction veuillez suivre ces directives:", status: "blank", comment: "" },
+    { key: "wifiMsg", phrase: "Utilisez une connexion Internet 4G ou 5G au lieu du Wi-Fi.", status: "blank", comment: "" },
+    { key: "hotspotMsg", phrase: "Désactivez le point d'accès de votre appareil.", status: "blank", comment: "" },
+    { key: "bluetoothMsg", phrase: "Ne connectez pas votre appareil à d'autres appareils portables via Bluetooth.", status: "blank", comment: "" },
+    { key: "sessionId", phrase: "ID de Session", status: "blank", comment: "" },
+    { key: "loadingData", phrase: "Chargement des Données", status: "blank", comment: "" },
+    { key: "chooseGate", phrase: "Choisir une Porte", status: "blank", comment: "" },
+    { key: "nearbyStation", phrase: "Destination À Proximité", status: "blank", comment: "" },
+    { key: "routeTo", phrase: "Itinéraire vers %s", status: "blank", comment: "" },
+    { key: "bestAllPrefs", phrase: "Meilleur itinéraire affiché pas toutes les préférences ne sont satisfaites.", status: "blank", comment: "" },
+    { key: "someStopsClosed", phrase: "Certains arrêts de votre voyage peuvent être fermés", status: "blank", comment: "" },
+    { key: "closedAt", phrase: "Fermé à", status: "blank", comment: "" },
+    { key: "closedNow", phrase: "Fermé maintenant,", status: "blank", comment: "" },
+    { key: "opensTomorrow", phrase: "ouvre demain", status: "blank", comment: "" },
+    { key: "opensOn", phrase: "ouvre le", status: "blank", comment: "" },
+    { key: "at", phrase: "à", status: "blank", comment: "" },
+    { key: "opensAt", phrase: "ouvre à", status: "blank", comment: "" },
+    { key: "arriveFuture", phrase: "Vous arriverez à votre destination", status: "blank", comment: "" },
+    { key: "then", phrase: "puis", status: "blank", comment: "" },
+    { key: "arrive", phrase: "arriver", status: "blank", comment: "" },
+    { key: "destination", phrase: "destination", status: "blank", comment: "" },
+    { key: "entering", phrase: "Entrée de %1$s", status: "blank", comment: "" },
+    { key: "offCampusArrive", phrase: "et vous arriverez à %s", status: "blank", comment: "" },
+    { key: "offCampusReach", phrase: "et vous atteindrez la destination", status: "blank", comment: "" },
+    { key: "switchCampus", phrase: "Changer", status: "blank", comment: "" },
+    { key: "switchCampusMsg", phrase: "\"POI, Lieu, Emplacement\" partagé se trouve dans un campus différent souhaitez-vous changer pour le voir?", status: "blank", comment: "" },
+    { key: "startForeground", phrase: "Activer les services de localisation de premier plan", status: "blank", comment: "" },
+    { key: "offlineMode", phrase: "Activer Hors Ligne", status: "blank", comment: "" },
+    { key: "exitApp", phrase: "Êtes-vous sûr de vouloir quitter?", status: "blank", comment: "" },
+    { key: "appName", phrase: "Mon Application Filament", status: "blank", comment: "" },
+  ]},
+  { id: "errorPage", label: "Error Page", items: [
+    { key: "mainMsg", phrase: "Une erreur inattendue s'est produite", status: "blank", comment: "" },
+    { key: "btnText", phrase: "Réessayer", status: "blank", comment: "" },
+  ]},
+  { id: "dayAndTime", label: "Day & Time", items: [
+    { key: "days.Sunday", phrase: "Dimanche", status: "blank", comment: "" },
+    { key: "days.Monday", phrase: "Lundi", status: "blank", comment: "" },
+    { key: "days.Tuesday", phrase: "Mardi", status: "blank", comment: "" },
+    { key: "days.Wednesday", phrase: "Mercredi", status: "blank", comment: "" },
+    { key: "days.Thursday", phrase: "Jeudi", status: "blank", comment: "" },
+    { key: "days.Friday", phrase: "Vendredi", status: "blank", comment: "" },
+    { key: "days.Saturday", phrase: "Samedi", status: "blank", comment: "" },
+  ]},
+];
+
+let currentFilter = 'all';
+
+function setStatus(sectionId, key, newStatus) {
+  const section = SECTIONS.find(s => s.id === sectionId);
+  if (!section) return;
+  const item = section.items.find(i => i.key === key);
+  if (!item) return;
+  if (item.status === newStatus) { item.status = 'blank'; }
+  else { item.status = newStatus; }
+  if (item.status !== 'fail') item.comment = '';
+  renderAll();
+  saveLocal();
+}
+
+function setComment(sectionId, key, val) {
+  const section = SECTIONS.find(s => s.id === sectionId);
+  if (!section) return;
+  const item = section.items.find(i => i.key === key);
+  if (item) { item.comment = val; saveLocal(); }
+}
+
+function renderAll() {
+  const searchVal = document.getElementById('searchBox').value.toLowerCase();
+  const container = document.getElementById('checklist');
+  container.innerHTML = '';
+  const counts = { done: 0, fail: 0, howto: 0, blank: 0, total: 0 };
+
+  SECTIONS.forEach(section => {
+    const secDiv = document.createElement('div');
+    secDiv.className = 'section';
+
+    const secCounts = { done: 0, fail: 0, howto: 0, blank: 0 };
+    section.items.forEach(it => secCounts[it.status]++);
+
+    const header = document.createElement('div');
+    header.className = 'section-header';
+    header.innerHTML = `${section.label} <span class="section-badge">${section.items.length} phrases</span>`;
+    secDiv.appendChild(header);
+
+    let anyVisible = false;
+    section.items.forEach(item => {
+      counts.total++;
+      counts[item.status]++;
+
+      const matchesFilter = currentFilter === 'all' || item.status === currentFilter;
+      const matchesSearch = !searchVal || item.key.toLowerCase().includes(searchVal) || item.phrase.toLowerCase().includes(searchVal);
+      const visible = matchesFilter && matchesSearch;
+
+      const itemDiv = document.createElement('div');
+      itemDiv.className = `item ${item.status}`;
+      if (!visible) itemDiv.classList.add('hidden-item');
+      else anyVisible = true;
+
+      const main = document.createElement('div');
+      main.className = 'item-main';
+      main.innerHTML = `<div class="key-label">${section.id}.${item.key}</div><div class="phrase">${item.phrase}</div>`;
+
+      const controls = document.createElement('div');
+      controls.className = 'item-controls';
+
+      ['done','fail','howto','blank'].forEach(s => {
+        const btn = document.createElement('button');
+        btn.className = 'status-btn' + (item.status === s ? ` active-${s}` : '');
+        btn.textContent = s === 'howto' ? 'How to test' : s.charAt(0).toUpperCase() + s.slice(1);
+        btn.onclick = () => setStatus(section.id, item.key, s);
+        controls.appendChild(btn);
+      });
+
+      const commentWrap = document.createElement('div');
+      commentWrap.className = 'comment-wrap' + (item.status === 'fail' ? ' visible' : '');
+
+      const commentInput = document.createElement('textarea');
+      commentInput.className = 'comment-input';
+      commentInput.placeholder = 'Why is it failing?';
+      commentInput.value = item.comment || '';
+      commentInput.oninput = e => setComment(section.id, item.key, e.target.value);
+      commentWrap.appendChild(commentInput);
+
+      const wrapper = document.createElement('div');
+      wrapper.style.cssText = 'display:flex; flex-direction:column; flex:1;';
+      wrapper.appendChild(main);
+      wrapper.appendChild(commentWrap);
+
+      itemDiv.appendChild(wrapper);
+      itemDiv.appendChild(controls);
+      secDiv.appendChild(itemDiv);
+    });
+
+    if (!anyVisible && (currentFilter !== 'all' || searchVal)) {
+      secDiv.style.display = 'none';
+    }
+    container.appendChild(secDiv);
+  });
+
+  // Stats
+  const pct = n => counts.total ? Math.round(n / counts.total * 100) : 0;
+  document.getElementById('statsBar').innerHTML = `
+    <span class="s-done">✓ Done: ${counts.done} (${pct(counts.done)}%)</span>
+    <span class="s-fail">✗ Fail: ${counts.fail}</span>
+    <span class="s-howto">? How to test: ${counts.howto}</span>
+    <span class="s-blank">– Blank: ${counts.blank}</span>
+    <span>Total: ${counts.total}</span>
+  `;
+}
+
+function setFilter(val, btn) {
+  currentFilter = val;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll();
+}
+
+function applyFilters() { renderAll(); }
+
+function saveLocal() {
+  try { localStorage.setItem('fr-checklist', JSON.stringify(SECTIONS)); } catch(e) {}
+}
+
+function loadLocal() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('fr-checklist'));
+    if (!saved) return;
+    saved.forEach(savedSec => {
+      const sec = SECTIONS.find(s => s.id === savedSec.id);
+      if (!sec) return;
+      savedSec.items.forEach(savedItem => {
+        const item = sec.items.find(i => i.key === savedItem.key);
+        if (item) { item.status = savedItem.status; item.comment = savedItem.comment || ''; }
+      });
+    });
+  } catch(e) {}
+}
+
+function exportData() {
+  const export_data = SECTIONS.map(s => ({
+    id: s.id, label: s.label,
+    items: s.items.map(i => ({ key: i.key, phrase: i.phrase, status: i.status, comment: i.comment }))
+  }));
+  const blob = new Blob([JSON.stringify(export_data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'fr-translation-checklist.json';
+  a.click();
+}
+
+function importClick() { document.getElementById('importFile').click(); }
+function importData(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      data.forEach(savedSec => {
+        const sec = SECTIONS.find(s => s.id === savedSec.id);
+        if (!sec) return;
+        savedSec.items.forEach(savedItem => {
+          const item = sec.items.find(i => i.key === savedItem.key);
+          if (item) { item.status = savedItem.status; item.comment = savedItem.comment || ''; }
+        });
+      });
+      renderAll();
+      saveLocal();
+    } catch { alert('Invalid JSON file.'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+loadLocal();
+renderAll();
+</script>
+</body>
+</html>
