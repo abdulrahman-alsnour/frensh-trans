@@ -130,8 +130,6 @@
   .filter-btn:hover { border-color: #8b949e; }
 
   .hidden-item { display: none !important; }
-  .hidden-section .section-header { opacity: 0.4; }
-
   #searchBox { width: 200px; }
 </style>
 </head>
@@ -168,32 +166,7 @@
 <div id="checklist"></div>
 
 <script>
-const SECTIONS = JSON.parse(`[
-  {"id":"common","label":"Common","items":[{"key":"done","phrase":"Fait","status":"done","comment":""},{"key":"cancel","phrase":"Annuler","status":"done","comment":""},{"key":"ok","phrase":"OK","status":"done","comment":""},{"key":"yes","phrase":"Oui","status":"done","comment":""},{"key":"no","phrase":"Non","status":"done","comment":""},{"key":"retry","phrase":"Réessayer","status":"done","comment":""},{"key":"settings","phrase":"Paramètres","status":"done","comment":""},{"key":"ignore","phrase":"Ignorer","status":"done","comment":""},{"key":"confirm","phrase":"Confirmer","status":"blank","comment":""},{"key":"campus","phrase":"Campus","status":"blank","comment":""},{"key":"venue","phrase":"Lieu","status":"blank","comment":""},{"key":"venues","phrase":"Lieux","status":"blank","comment":""},{"key":"floors","phrase":"Étages","status":"done","comment":""},{"key":"floor","phrase":"Étage","status":"done","comment":""},{"key":"meter","phrase":"m","status":"done","comment":""},{"key":"loading","phrase":"Chargement...","status":"done","comment":""},{"key":"back","phrase":"Retour","status":"done","comment":""},{"key":"remove","phrase":"Supprimer","status":"blank","comment":""}]},
-  {"id":"auth","label":"Auth","items":[{"key":"login","phrase":"Connexion","status":"done","comment":""},{"key":"loginUsername","phrase":"Nom d'utilisateur ou E-mail","status":"done","comment":""},{"key":"password","phrase":"Mot de passe","status":"done","comment":""},{"key":"emailInvalid","phrase":"Nom d'utilisateur ou e-mail invalide","status":"done","comment":""},{"key":"passwordInvalid","phrase":"Mot de passe invalide","status":"done","comment":""},{"key":"selectCampus","phrase":"Sélectionnez Votre Campus","status":"done","comment":""},{"key":"changeCampus","phrase":"Sélectionner Campus","status":"done","comment":""},{"key":"noCampusDetails","phrase":"Aucun détail de campus trouvé pour ce client. Veuillez contacter l'équipe d'assistance.","status":"howto","comment":""},{"key":"invalidCampusId","phrase":"ID de Campus invalide. Veuillez entrer un ID de Campus valide.","status":"howto","comment":""},{"key":"guestLogin","phrase":"Se connecter en tant qu'invité","status":"done","comment":""},{"key":"qrCode","phrase":"Code QR","status":"done","comment":""},{"key":"scanQrCode","phrase":"Scanner le code QR","status":"done","comment":""},{"key":"errorQrCode","phrase":"erreur dans le code Qr","status":"done","comment":""},{"key":"termsPrivacy","phrase":"Conditions de Service et Politique de Confidentialité","status":"done","comment":""}]},
-  {"id":"messages","label":"Messages","items":[{"key":"notFound","phrase":"Non trouvé","status":"blank","comment":""},{"key":"featureTypeNotFound","phrase":"Type de fonctionnalité non trouvé","status":"blank","comment":""},{"key":"serviceNotAvailable","phrase":"Service Indisponible","status":"blank","comment":""},{"key":"serviceNotAvailableSubtext","phrase":"Le service est actuellement indisponible. Veuillez réessayer plus tard.","status":"blank","comment":""},{"key":"connectionError","phrase":"Erreur de Connexion","status":"blank","comment":""},{"key":"errorRetrievingData","phrase":"Erreur lors de la récupération des données","status":"blank","comment":""},{"key":"routeNotDetected","phrase":"L'itinéraire n'a pas encore été détecté","status":"blank","comment":""},{"key":"errorWhileDetection","phrase":"Erreur lors de la détection de l'itinéraire","status":"blank","comment":""},{"key":"permissionDenied","phrase":"Erreur: un ou plusieurs autorisations requises telles que la localisation et Bluetooth ne sont pas accordées.","status":"blank","comment":""},{"key":"noDirectionFromLocation","phrase":"Les directions ne sont plus disponibles de votre emplacement","status":"done","comment":""}]},
-  {"id":"toast","label":"Toast","items":[{"key":"switchToMobileData","phrase":"Passer aux données mobiles","status":"done","comment":""},{"key":"switchToMobileDataPopup","phrase":"Pour une meilleure précision de positionnement nous vous recommandons de passer à une connexion de données mobiles.","status":"done","comment":""},{"key":"connectionError","phrase":"Erreur de Connexion","status":"done","comment":""},{"key":"connectionErrorPopup","phrase":"Une erreur s'est produite lors de la connexion au serveur.","status":"done","comment":""},{"key":"locationServicesOff","phrase":"Services de localisation désactivés","status":"done","comment":""},{"key":"locationServicesOffPopup","phrase":"Vous pouvez atteindre votre destination estimer les temps de trajet et améliorer les résultats de recherche lorsque vous activez les services de localisation.","status":"done","comment":""},{"key":"bluetoothServicesOff","phrase":"Services Bluetooth désactivés","status":"done","comment":""},{"key":"bluetoothServicesOffPopup","phrase":"Vous obtiendrez des indications virage par virage des temps de trajet estimés et des résultats de recherche améliorés lorsque vous activez les services Bluetooth.","status":"done","comment":""}]},
-  {"id":"exploration","label":"Exploration","items":[{"key":"home","phrase":"Accueil","status":"done","comment":""},{"key":"directory","phrase":"Annuaire","status":"done","comment":""},{"key":"directoryTitle","phrase":"Annuaire","status":"done","comment":""},{"key":"favorites","phrase":"Favoris","status":"done","comment":""},{"key":"myLocation","phrase":"Ma Position","status":"done","comment":""},{"key":"search","phrase":"Rechercher","status":"done","comment":""},{"key":"seeAll","phrase":"Voir tout","status":"done","comment":""},{"key":"shareMyLocation","phrase":"Partager ma Position","status":"done","comment":""},{"key":"markMyLocationAsParking","phrase":"Marquer ma position comme parking","status":"done","comment":""},{"key":"markAsParking","phrase":"Marquer comme parking","status":"done","comment":""},{"key":"currentLocation","phrase":"Ceci est ma position actuelle","status":"done","comment":""}]},
-  {"id":"sheets","label":"Sheets","items":[{"key":"directions","phrase":"Directions","status":"done","comment":""},{"key":"distance","phrase":"Distance","status":"done","comment":""},{"key":"address","phrase":"Adresse","status":"done","comment":""},{"key":"operatingHours","phrase":"Heures d'ouverture","status":"done","comment":""},{"key":"hours","phrase":"Heures","status":"done","comment":""},{"key":"open","phrase":"Ouvert","status":"done","comment":""},{"key":"closed","phrase":"Fermé","status":"done","comment":""},{"key":"opens","phrase":"Ouvre","status":"done","comment":""},{"key":"closedToday","phrase":"Fermé Aujourd'hui","status":"done","comment":""},{"key":"goodToKnow","phrase":"À Savoir","status":"done","comment":""},{"key":"amenities","phrase":"Équipements","status":"done","comment":""},{"key":"more","phrase":"Plus","status":"done","comment":""},{"key":"contacts","phrase":"Contacts","status":"done","comment":""},{"key":"about","phrase":"À Propos","status":"done","comment":""},{"key":"addToFavorites","phrase":"Ajouter aux Favoris","status":"done","comment":""},{"key":"removeFromFavorites","phrase":"Supprimer des Favoris","status":"done","comment":""},{"key":"details","phrase":"Détails","status":"done","comment":""},{"key":"website","phrase":"Site Web","status":"done","comment":""},{"key":"mail","phrase":"Courrier","status":"done","comment":""},{"key":"phone","phrase":"Téléphone","status":"done","comment":""},{"key":"call","phrase":"Appeler","status":"done","comment":""},{"key":"email","phrase":"E-mail","status":"done","comment":""},{"key":"reportAnIssue","phrase":"Signaler un Problème","status":"done","comment":""}]},
-  {"id":"floorSelector","label":"Floor Selector","items":[{"key":"chooseAFloor","phrase":"Choisir un Étage","status":"done","comment":""},{"key":"selectedVenue","phrase":"Lieu Sélectionné","status":"done","comment":""},{"key":"floorMaps","phrase":"Plans d'étage","status":"done","comment":""},{"key":"changingFloor","phrase":"Changement d'étage","status":"done","comment":""},{"key":"connectedVenues","phrase":"Lieux Connectés","status":"done","comment":""}]},
-  {"id":"categorysheet","label":"Category Sheet","items":[{"key":"noPlaces","phrase":"Aucun lieu dans cette catégorie à cet endroit","status":"done","comment":""},{"key":"noPoi","phrase":"Vérifiez d'autres emplacements pour trouver des lieux","status":"done","comment":""},{"key":"title","phrase":"Catégories","status":"done","comment":""},{"key":"empty","phrase":"Aucun lieu dans cette catégorie à cet endroit","status":"done","comment":""},{"key":"emptyExplore","phrase":"Essayez d'explorer d'autres lieux pour trouver des places","status":"done","comment":""}]},
-  {"id":"directionsSheet","label":"Directions Sheet","items":[{"key":"myLocation","phrase":"Ma Position","status":"done","comment":""},{"key":"addParking","phrase":"Ajouter un Parking","status":"done","comment":""},{"key":"addStop","phrase":"Ajouter un Arrêt","status":"done","comment":""},{"key":"addingParking","phrase":"Recherche de Parking en cours","status":"done","comment":""},{"key":"parkingUnavailable","phrase":"Le parking est actuellement indisponible. Veuillez réessayer bientôt","status":"done","comment":""},{"key":"parkingSave","phrase":"Souhaitez-vous enregistrer votre emplacement de parking?","status":"done","comment":""},{"key":"bestRouteShown","phrase":"Meilleur itinéraire affiché. Pas toutes les préférences ne sont satisfaites.","status":"done","comment":""},{"key":"go","phrase":"Aller","status":"done","comment":""},{"key":"preview","phrase":"Aperçu","status":"done","comment":""},{"key":"directionsNotAvailable","phrase":"Directions Indisponibles","status":"done","comment":""},{"key":"directionsNotAvailableFromLocation","phrase":"Les directions ne sont pas disponibles à partir de cet emplacement","status":"done","comment":""},{"key":"changeAvoidanceOptions","phrase":"Modifiez les options d'évitement pour obtenir les directions","status":"blank","comment":""},{"key":"endTrip","phrase":"Terminer le Voyage","status":"blank","comment":""}]},
-  {"id":"stopSheet","label":"Stop Sheet","items":[{"key":"stopReached","phrase":"Arrêt (%s) Atteint","status":"blank","comment":""},{"key":"stops","phrase":"Arrêts","status":"blank","comment":""},{"key":"addStop","phrase":"Ajouter un Arrêt","status":"done","comment":""},{"key":"changeStop","phrase":"Changer l'Arrêt","status":"done","comment":""},{"key":"resultStations","phrase":"Résultats","status":"blank","comment":""},{"key":"addStartStation","phrase":"Choisir la gare de départ","status":"blank","comment":""}]},
-  {"id":"parking","label":"Parking","items":[{"key":"header","phrase":"Voiture Stationnée","status":"blank","comment":""},{"key":"location","phrase":"Ceci est mon emplacement de parking","status":"blank","comment":""},{"key":"delete","phrase":"Effacer le Parking","status":"done","comment":""},{"key":"timeHead","phrase":"Temps de parking","status":"blank","comment":""},{"key":"parking","phrase":"Parking","status":"blank","comment":""},{"key":"reached","phrase":"Parking Atteint","status":"blank","comment":""},{"key":"secAgo","phrase":"à l'instant","status":"blank","comment":""},{"key":"available","phrase":"Le parking est actuellement indisponible. Vous serez dirigé directement vers votre destination","status":"blank","comment":""},{"key":"noAvailable","phrase":"Aucun Parking Disponible","status":"blank","comment":""},{"key":"tapContinue","phrase":"Tapez \\"Continuer\\" une fois que vous avez terminé le stationnement","status":"blank","comment":""}]},
-  {"id":"navigationSheet","label":"Navigation Sheet","items":[{"key":"feedback.feedback","phrase":"Avis","status":"done","comment":""},{"key":"feedback.title","phrase":"Destination Atteinte!","status":"done","comment":""},{"key":"feedback.subtitle","phrase":"Vous êtes arrivé à {destination}","status":"done","comment":""},{"key":"feedback.helpText","phrase":"Aidez-nous à améliorer nos services. Comment s'est déroulée la navigation lors de ce trajet?","status":"done","comment":""},{"key":"feedback.done","phrase":"Fait","status":"done","comment":""},{"key":"feedback.cancel","phrase":"Annuler","status":"done","comment":""},{"key":"feedback.describeIssue","phrase":"Décrivez votre problème avec la navigation lors de ce voyage","status":"done","comment":""},{"key":"feedback.enterReason","phrase":"Entrez votre raison","status":"done","comment":""},{"key":"min","phrase":"min","status":"done","comment":""},{"key":"arrival","phrase":"Arrivée","status":"done","comment":""}]},
-  {"id":"navigationScreen","label":"Navigation Screen","items":[{"key":"meter","phrase":"m","status":"done","comment":""},{"key":"share","phrase":"Partager","status":"done","comment":""},{"key":"destinationReached","phrase":"Destination atteinte","status":"done","comment":""},{"key":"exit","phrase":"Quitter","status":"done","comment":""},{"key":"estTime","phrase":"min","status":"done","comment":""},{"key":"destTime","phrase":"%d m","status":"done","comment":""},{"key":"continue","phrase":"Continuer %s","status":"done","comment":""},{"key":"arrivedAt","phrase":"Vous êtes arrivé à %s","status":"done","comment":""},{"key":"arrivalTime","phrase":"arrivée","status":"done","comment":""},{"key":"distanceLabel","phrase":"mètre","status":"done","comment":""},{"key":"timeRemaining","phrase":"min","status":"done","comment":""},{"key":"recalculate","phrase":"Recalculer","status":"done","comment":""}]},
-  {"id":"avoidSheet","label":"Avoid Sheet","items":[{"key":"avoid","phrase":"Éviter","status":"done","comment":""},{"key":"avoidNum","phrase":"Éviter (%s)","status":"done","comment":""},{"key":"avoidStairs","phrase":"Éviter les Escaliers","status":"done","comment":""},{"key":"avoidRamps","phrase":"Éviter les Rampes","status":"done","comment":""},{"key":"avoidEscalators","phrase":"Éviter les Escaliers Roulants","status":"done","comment":""},{"key":"avoidElevators","phrase":"Éviter les Ascenseurs","status":"done","comment":""},{"key":"avoidOutdoor","phrase":"Éviter Extérieur","status":"done","comment":""},{"key":"avoidIndoor","phrase":"Éviter Intérieur","status":"done","comment":""},{"key":"apply","phrase":"Appliquer","status":"done","comment":""},{"key":"cancel","phrase":"Annuler","status":"done","comment":""}]},
-  {"id":"transportationMode","label":"Transportation Mode","items":[{"key":"walk","phrase":"Marche à Pied","status":"done","comment":""},{"key":"car","phrase":"Voiture","status":"done","comment":""},{"key":"transit","phrase":"Transport en Commun","status":"done","comment":""},{"key":"cycle","phrase":"Vélo","status":"done","comment":""},{"key":"ride","phrase":"Trajet","status":"done","comment":""},{"key":"drive","phrase":"Conduire","status":"done","comment":""}]},
-  {"id":"searchSheet","label":"Search Sheet","items":[{"key":"searching","phrase":"Recherche en cours...","status":"done","comment":""},{"key":"noSearchFirstLine","phrase":"Aucun lieu correspondant trouvé","status":"blank","comment":""},{"key":"noSearchSecondLine","phrase":"Essayez de chercher un autre terme","status":"blank","comment":""},{"key":"clear","phrase":"Effacer","status":"done","comment":""},{"key":"openNow","phrase":"Ouvert Maintenant","status":"done","comment":""},{"key":"categories","phrase":"Catégories","status":"done","comment":""},{"key":"amenities","phrase":"Équipements","status":"done","comment":""},{"key":"sortByDistance","phrase":"Trier par Distance","status":"done","comment":""},{"key":"sortByMatch","phrase":"Trier par Meilleure Correspondance","status":"blank","comment":""},{"key":"filter","phrase":"Filtrer","status":"done","comment":""},{"key":"bestMatch","phrase":"Meilleure Correspondance","status":"done","comment":""},{"key":"apply","phrase":"Appliquer","status":"done","comment":""},{"key":"popular","phrase":"Populaire","status":"done","comment":""},{"key":"nearby","phrase":"À Proximité","status":"done","comment":""}]},
-  {"id":"navigationInstructions","label":"Navigation Instructions","items":[{"key":"goStraight","phrase":"Allez Tout Droit","status":"blank","comment":""},{"key":"goBackwards","phrase":"Demi-tour et continuez","status":"blank","comment":""},{"key":"turnRight","phrase":"Tournez à Droite","status":"blank","comment":""},{"key":"turnLeft","phrase":"Tournez à Gauche","status":"blank","comment":""},{"key":"slightTurnRight","phrase":"Léger virage à droite","status":"blank","comment":""},{"key":"slightTurnLeft","phrase":"Léger virage à gauche","status":"blank","comment":""},{"key":"sharpRight","phrase":"Virage serré à droite","status":"blank","comment":""},{"key":"sharpLeft","phrase":"Virage serré à gauche","status":"blank","comment":""},{"key":"goAhead","phrase":"Continuez","status":"blank","comment":""},{"key":"destReach","phrase":"pour atteindre la destination","status":"blank","comment":""},{"key":"distanceInst","phrase":"pour %s mètres","status":"blank","comment":""},{"key":"destReachInst","phrase":"Allez tout droit pour atteindre la destination","status":"blank","comment":""}]},
-  {"id":"sharing","label":"Sharing","items":[{"key":"from","phrase":"De %s à %s","status":"blank","comment":""},{"key":"timeAndMode","phrase":"%s minutes en %s","status":"blank","comment":""},{"key":"asText","phrase":"Sous forme de texte","status":"blank","comment":""},{"key":"asPdf","phrase":"Sous forme de PDF","status":"blank","comment":""},{"key":"sharedRoute","phrase":"Itinéraire partagé:","status":"blank","comment":""},{"key":"sharedLocation","phrase":"Emplacement Partagé","status":"blank","comment":""},{"key":"sharedLocationDetails","phrase":"Détails","status":"blank","comment":""}]},
-  {"id":"permissions","label":"Permissions","items":[{"key":"bluetoothAccess","phrase":"Cette application a besoin d'accéder à votre localisation et Bluetooth pour fonctionner correctement","status":"blank","comment":""},{"key":"goToSettings","phrase":"Veuillez aller aux paramètres de l'application pour accorder ces autorisations.","status":"blank","comment":""},{"key":"settings","phrase":"Aller aux paramètres","status":"blank","comment":""},{"key":"gpsDisabled","phrase":"Le GPS est désactivé sur votre appareil. Voulez-vous l'activer?","status":"blank","comment":""},{"key":"enable","phrase":"Activer","status":"blank","comment":""},{"key":"bluetoothDisabled","phrase":"Le Bluetooth est désactivé sur votre appareil. Voulez-vous l'activer?","status":"blank","comment":""},{"key":"grant","phrase":"Accorder","status":"blank","comment":""},{"key":"geofenceAlert","phrase":"Cette application utilise le géofencing pour envoyer des alertes et des offres personnalisées basées sur votre localisation.","status":"blank","comment":""},{"key":"later","phrase":"Plus tard","status":"done","comment":""},{"key":"locationOff.title","phrase":"Services de localisation désactivés","status":"fail","comment":""},{"key":"locationOff.subtitle","phrase":"Obtenir des directions lorsque les services de localisation sont activés.","status":"done","comment":""},{"key":"locationOff.message","phrase":"Vous pouvez atteindre votre destination estimer les temps de trajet et améliorer les résultats de recherche lorsque vous activez les services de localisation.","status":"done","comment":""},{"key":"locationOff.btnYes","phrase":"Activer dans les Paramètres","status":"done","comment":""},{"key":"locationOff.btnNo","phrase":"Garder les Services de Localisation Désactivés","status":"done","comment":""},{"key":"bluetoothOff.title","phrase":"Services Bluetooth désactivés","status":"fail","comment":""},{"key":"bluetoothOff.subtitle","phrase":"PenNav fonctionne mieux avec les services Bluetooth activés.","status":"done","comment":""},{"key":"bluetoothOff.message","phrase":"Vous obtiendrez des indications virage par virage des temps de trajet estimés et des résultats de recherche améliorés lorsque vous activez les services Bluetooth.","status":"done","comment":""},{"key":"bluetoothOff.btnYes","phrase":"Activer dans les Paramètres","status":"done","comment":""},{"key":"bluetoothOff.btnNo","phrase":"Garder les Services Bluetooth Désactivés","status":"done","comment":""},{"key":"uncoveredArea.title","phrase":"Précision de localisation limitée","status":"blank","comment":""},{"key":"uncoveredArea.message","phrase":"La précision de la navigation peut être limitée dans votre région.","status":"blank","comment":""},{"key":"uncoveredArea.btn","phrase":"D'accord","status":"blank","comment":""},{"key":"findingLocation.title","phrase":"Emplacement perdu","status":"done","comment":""},{"key":"findingLocation.message","phrase":"Il semble y avoir un problème pour détecter votre emplacement","status":"done","comment":""},{"key":"findingLocation.btnRetry","phrase":"Réessayer","status":"done","comment":""},{"key":"findingLocation.btnContinue","phrase":"Continuer sans localisation","status":"done","comment":""},{"key":"findingLocation.btnOk","phrase":"OK","status":"fail","comment":""}]},
-  {"id":"geofence","label":"Geofence","items":[{"key":"startGeofence","phrase":"Démarrer Geofence","status":"blank","comment":""},{"key":"startedGeofence","phrase":"Geofence Démarré","status":"blank","comment":""},{"key":"failedStart","phrase":"Geofence n'a pas pu démarrer","status":"blank","comment":""},{"key":"stopGeofence","phrase":"Arrêter Geofence","status":"blank","comment":""},{"key":"stoppedGeofence","phrase":"Geofence Arrêté","status":"blank","comment":""},{"key":"updateGeofence","phrase":"Mettre à Jour Geofence","status":"blank","comment":""},{"key":"updatedGeofence","phrase":"Geofence Mis à Jour","status":"blank","comment":""},{"key":"geofence","phrase":"Geofence","status":"blank","comment":""},{"key":"indoorError","phrase":"Le géofencing ne s'applique pas aux déploiements intérieurs","status":"blank","comment":""},{"key":"startBeforeUpdate","phrase":"Erreur: Veuillez démarrer le SDK geofence avant d'appeler update","status":"blank","comment":""},{"key":"alreadyRunning","phrase":"Le SDK Geofence est déjà en cours d'exécution. Veuillez appeler updateGeofencing pour mettre à jour les données","status":"blank","comment":""}]},
-  {"id":"ar","label":"AR","items":[{"key":"ar","phrase":"AR","status":"blank","comment":""},{"key":"cameraNeeded","phrase":"Accès à la Caméra Requis","status":"blank","comment":""},{"key":"enableCamera","phrase":"Activez l'accès à la caméra pour activer la navigation AR","status":"blank","comment":""},{"key":"3d","phrase":"3D","status":"blank","comment":""},{"key":"2d","phrase":"2D","status":"blank","comment":""}]},
-  {"id":"misc","label":"Misc","items":[{"key":"calibrate","phrase":"Calibrez votre compas à points bleus à tout moment","status":"blank","comment":""},{"key":"tiltInfo","phrase":"inclinez et déplacez votre téléphone trois fois comme ceci:","status":"blank","comment":""},{"key":"welcome","phrase":"Pour la meilleure expérience en utilisant cette fonction veuillez suivre ces directives:","status":"blank","comment":""},{"key":"wifiMsg","phrase":"Utilisez une connexion Internet 4G ou 5G au lieu du Wi-Fi.","status":"blank","comment":""},{"key":"hotspotMsg","phrase":"Désactivez le point d'accès de votre appareil.","status":"blank","comment":""},{"key":"bluetoothMsg","phrase":"Ne connectez pas votre appareil à d'autres appareils portables via Bluetooth.","status":"blank","comment":""},{"key":"sessionId","phrase":"ID de Session","status":"blank","comment":""},{"key":"loadingData","phrase":"Chargement des Données","status":"blank","comment":""},{"key":"chooseGate","phrase":"Choisir une Porte","status":"blank","comment":""},{"key":"nearbyStation","phrase":"Destination À Proximité","status":"blank","comment":""},{"key":"routeTo","phrase":"Itinéraire vers %s","status":"blank","comment":""},{"key":"bestAllPrefs","phrase":"Meilleur itinéraire affiché pas toutes les préférences ne sont satisfaites.","status":"blank","comment":""},{"key":"someStopsClosed","phrase":"Certains arrêts de votre voyage peuvent être fermés","status":"blank","comment":""},{"key":"closedAt","phrase":"Fermé à","status":"blank","comment":""},{"key":"closedNow","phrase":"Fermé maintenant,","status":"blank","comment":""},{"key":"opensTomorrow","phrase":"ouvre demain","status":"blank","comment":""},{"key":"opensOn","phrase":"ouvre le","status":"blank","comment":""},{"key":"at","phrase":"à","status":"blank","comment":""},{"key":"opensAt","phrase":"ouvre à","status":"blank","comment":""},{"key":"arriveFuture","phrase":"Vous arriverez à votre destination","status":"blank","comment":""},{"key":"then","phrase":"puis","status":"blank","comment":""},{"key":"arrive","phrase":"arriver","status":"blank","comment":""},{"key":"destination","phrase":"destination","status":"blank","comment":""},{"key":"entering","phrase":"Entrée de %1$s","status":"blank","comment":""},{"key":"offCampusArrive","phrase":"et vous arriverez à %s","status":"blank","comment":""},{"key":"offCampusReach","phrase":"et vous atteindrez la destination","status":"blank","comment":""},{"key":"switchCampus","phrase":"Changer","status":"blank","comment":""},{"key":"switchCampusMsg","phrase":"\\"POI, Lieu, Emplacement\\" partagé se trouve dans un campus différent souhaitez-vous changer pour le voir?","status":"blank","comment":""},{"key":"startForeground","phrase":"Activer les services de localisation de premier plan","status":"blank","comment":""},{"key":"offlineMode","phrase":"Activer Hors Ligne","status":"blank","comment":""},{"key":"exitApp","phrase":"Êtes-vous sûr de vouloir quitter?","status":"blank","comment":""},{"key":"appName","phrase":"Mon Application Filament","status":"blank","comment":""}]},
-  {"id":"errorPage","label":"Error Page","items":[{"key":"mainMsg","phrase":"Une erreur inattendue s'est produite","status":"blank","comment":""},{"key":"btnText","phrase":"Réessayer","status":"blank","comment":""}]},
-  {"id":"dayAndTime","label":"Day & Time","items":[{"key":"days.Sunday","phrase":"Dimanche","status":"blank","comment":""},{"key":"days.Monday","phrase":"Lundi","status":"blank","comment":""},{"key":"days.Tuesday","phrase":"Mardi","status":"blank","comment":""},{"key":"days.Wednesday","phrase":"Mercredi","status":"blank","comment":""},{"key":"days.Thursday","phrase":"Jeudi","status":"blank","comment":""},{"key":"days.Friday","phrase":"Vendredi","status":"blank","comment":""},{"key":"days.Saturday","phrase":"Samedi","status":"blank","comment":""}]}
-`); const _dummy = [
+const SECTIONS = [
   { id: "common", label: "Common", items: [
     { key: "done", phrase: "Fait", status: "done", comment: "" },
     { key: "cancel", phrase: "Annuler", status: "done", comment: "" },
@@ -201,7 +174,7 @@ const SECTIONS = JSON.parse(`[
     { key: "yes", phrase: "Oui", status: "done", comment: "" },
     { key: "no", phrase: "Non", status: "done", comment: "" },
     { key: "retry", phrase: "Réessayer", status: "done", comment: "" },
-    { key: "settings", phrase: "Paramètres", status: "blank", comment: "" },
+    { key: "settings", phrase: "Paramètres", status: "done", comment: "" },
     { key: "ignore", phrase: "Ignorer", status: "done", comment: "" },
     { key: "confirm", phrase: "Confirmer", status: "blank", comment: "" },
     { key: "campus", phrase: "Campus", status: "blank", comment: "" },
@@ -218,8 +191,8 @@ const SECTIONS = JSON.parse(`[
     { key: "login", phrase: "Connexion", status: "done", comment: "" },
     { key: "loginUsername", phrase: "Nom d'utilisateur ou E-mail", status: "done", comment: "" },
     { key: "password", phrase: "Mot de passe", status: "done", comment: "" },
-    { key: "emailInvalid", phrase: "Nom d'utilisateur ou e-mail invalide", status: "fail", comment: "" },
-    { key: "passwordInvalid", phrase: "Mot de passe invalide", status: "fail", comment: "" },
+    { key: "emailInvalid", phrase: "Nom d'utilisateur ou e-mail invalide", status: "done", comment: "" },
+    { key: "passwordInvalid", phrase: "Mot de passe invalide", status: "done", comment: "" },
     { key: "selectCampus", phrase: "Sélectionnez Votre Campus", status: "done", comment: "" },
     { key: "changeCampus", phrase: "Sélectionner Campus", status: "done", comment: "" },
     { key: "noCampusDetails", phrase: "Aucun détail de campus trouvé pour ce client. Veuillez contacter l'équipe d'assistance.", status: "howto", comment: "" },
@@ -227,7 +200,7 @@ const SECTIONS = JSON.parse(`[
     { key: "guestLogin", phrase: "Se connecter en tant qu'invité", status: "done", comment: "" },
     { key: "qrCode", phrase: "Code QR", status: "done", comment: "" },
     { key: "scanQrCode", phrase: "Scanner le code QR", status: "done", comment: "" },
-    { key: "errorQrCode", phrase: "erreur dans le code Qr", status: "howto", comment: "" },
+    { key: "errorQrCode", phrase: "erreur dans le code Qr", status: "done", comment: "" },
     { key: "termsPrivacy", phrase: "Conditions de Service et Politique de Confidentialité", status: "done", comment: "" },
   ]},
   { id: "messages", label: "Messages", items: [
@@ -245,17 +218,17 @@ const SECTIONS = JSON.parse(`[
   { id: "toast", label: "Toast", items: [
     { key: "switchToMobileData", phrase: "Passer aux données mobiles", status: "done", comment: "" },
     { key: "switchToMobileDataPopup", phrase: "Pour une meilleure précision de positionnement nous vous recommandons de passer à une connexion de données mobiles.", status: "done", comment: "" },
-    { key: "connectionError", phrase: "Erreur de Connexion", status: "blank", comment: "" },
-    { key: "connectionErrorPopup", phrase: "Une erreur s'est produite lors de la connexion au serveur.", status: "blank", comment: "" },
-    { key: "locationServicesOff", phrase: "Services de localisation désactivés", status: "blank", comment: "" },
-    { key: "locationServicesOffPopup", phrase: "Vous pouvez atteindre votre destination estimer les temps de trajet et améliorer les résultats de recherche lorsque vous activez les services de localisation.", status: "blank", comment: "" },
-    { key: "bluetoothServicesOff", phrase: "Services Bluetooth désactivés", status: "fail", comment: "" },
+    { key: "connectionError", phrase: "Erreur de Connexion", status: "done", comment: "" },
+    { key: "connectionErrorPopup", phrase: "Une erreur s'est produite lors de la connexion au serveur.", status: "done", comment: "" },
+    { key: "locationServicesOff", phrase: "Services de localisation désactivés", status: "done", comment: "" },
+    { key: "locationServicesOffPopup", phrase: "Vous pouvez atteindre votre destination estimer les temps de trajet et améliorer les résultats de recherche lorsque vous activez les services de localisation.", status: "done", comment: "" },
+    { key: "bluetoothServicesOff", phrase: "Services Bluetooth désactivés", status: "done", comment: "" },
     { key: "bluetoothServicesOffPopup", phrase: "Vous obtiendrez des indications virage par virage des temps de trajet estimés et des résultats de recherche améliorés lorsque vous activez les services Bluetooth.", status: "done", comment: "" },
   ]},
   { id: "exploration", label: "Exploration", items: [
-    { key: "home", phrase: "Accueil", status: "howto", comment: "" },
+    { key: "home", phrase: "Accueil", status: "done", comment: "" },
     { key: "directory", phrase: "Annuaire", status: "done", comment: "" },
-    { key: "directoryTitle", phrase: "Annuaire", status: "blank", comment: "" },
+    { key: "directoryTitle", phrase: "Annuaire", status: "done", comment: "" },
     { key: "favorites", phrase: "Favoris", status: "done", comment: "" },
     { key: "myLocation", phrase: "Ma Position", status: "done", comment: "" },
     { key: "search", phrase: "Rechercher", status: "done", comment: "" },
@@ -269,14 +242,14 @@ const SECTIONS = JSON.parse(`[
     { key: "directions", phrase: "Directions", status: "done", comment: "" },
     { key: "distance", phrase: "Distance", status: "done", comment: "" },
     { key: "address", phrase: "Adresse", status: "done", comment: "" },
-    { key: "operatingHours", phrase: "Heures d'ouverture", status: "howto", comment: "" },
+    { key: "operatingHours", phrase: "Heures d'ouverture", status: "done", comment: "" },
     { key: "hours", phrase: "Heures", status: "done", comment: "" },
     { key: "open", phrase: "Ouvert", status: "done", comment: "" },
     { key: "closed", phrase: "Fermé", status: "done", comment: "" },
     { key: "opens", phrase: "Ouvre", status: "done", comment: "" },
     { key: "closedToday", phrase: "Fermé Aujourd'hui", status: "done", comment: "" },
     { key: "goodToKnow", phrase: "À Savoir", status: "done", comment: "" },
-    { key: "amenities", phrase: "Équipements", status: "blank", comment: "" },
+    { key: "amenities", phrase: "Équipements", status: "done", comment: "" },
     { key: "more", phrase: "Plus", status: "done", comment: "" },
     { key: "contacts", phrase: "Contacts", status: "done", comment: "" },
     { key: "about", phrase: "À Propos", status: "done", comment: "" },
@@ -293,27 +266,27 @@ const SECTIONS = JSON.parse(`[
   { id: "floorSelector", label: "Floor Selector", items: [
     { key: "chooseAFloor", phrase: "Choisir un Étage", status: "done", comment: "" },
     { key: "selectedVenue", phrase: "Lieu Sélectionné", status: "done", comment: "" },
-    { key: "floorMaps", phrase: "Plans d'étage", status: "howto", comment: "" },
-    { key: "changingFloor", phrase: "Changement d'étage", status: "howto", comment: "" },
-    { key: "connectedVenues", phrase: "Lieux Connectés", status: "howto", comment: "" },
+    { key: "floorMaps", phrase: "Plans d'étage", status: "done", comment: "" },
+    { key: "changingFloor", phrase: "Changement d'étage", status: "done", comment: "" },
+    { key: "connectedVenues", phrase: "Lieux Connectés", status: "done", comment: "" },
   ]},
   { id: "categorysheet", label: "Category Sheet", items: [
     { key: "noPlaces", phrase: "Aucun lieu dans cette catégorie à cet endroit", status: "done", comment: "" },
-    { key: "noPoi", phrase: "Vérifiez d'autres emplacements pour trouver des lieux", status: "howto", comment: "" },
-    { key: "title", phrase: "Catégories", status: "howto", comment: "" },
-    { key: "empty", phrase: "Aucun lieu dans cette catégorie à cet endroit", status: "howto", comment: "" },
-    { key: "emptyExplore", phrase: "Essayez d'explorer d'autres lieux pour trouver des places", status: "howto", comment: "" },
+    { key: "noPoi", phrase: "Vérifiez d'autres emplacements pour trouver des lieux", status: "done", comment: "" },
+    { key: "title", phrase: "Catégories", status: "done", comment: "" },
+    { key: "empty", phrase: "Aucun lieu dans cette catégorie à cet endroit", status: "done", comment: "" },
+    { key: "emptyExplore", phrase: "Essayez d'explorer d'autres lieux pour trouver des places", status: "done", comment: "" },
   ]},
   { id: "directionsSheet", label: "Directions Sheet", items: [
     { key: "myLocation", phrase: "Ma Position", status: "done", comment: "" },
-    { key: "addParking", phrase: "Ajouter un Parking", status: "blank", comment: "" },
+    { key: "addParking", phrase: "Ajouter un Parking", status: "done", comment: "" },
     { key: "addStop", phrase: "Ajouter un Arrêt", status: "done", comment: "" },
-    { key: "addingParking", phrase: "Recherche de Parking en cours", status: "blank", comment: "" },
-    { key: "parkingUnavailable", phrase: "Le parking est actuellement indisponible. Veuillez réessayer bientôt", status: "blank", comment: "" },
-    { key: "parkingSave", phrase: "Souhaitez-vous enregistrer votre emplacement de parking?", status: "blank", comment: "" },
-    { key: "bestRouteShown", phrase: "Meilleur itinéraire affiché. Pas toutes les préférences ne sont satisfaites.", status: "blank", comment: "" },
+    { key: "addingParking", phrase: "Recherche de Parking en cours", status: "done", comment: "" },
+    { key: "parkingUnavailable", phrase: "Le parking est actuellement indisponible. Veuillez réessayer bientôt", status: "done", comment: "" },
+    { key: "parkingSave", phrase: "Souhaitez-vous enregistrer votre emplacement de parking?", status: "done", comment: "" },
+    { key: "bestRouteShown", phrase: "Meilleur itinéraire affiché. Pas toutes les préférences ne sont satisfaites.", status: "done", comment: "" },
     { key: "go", phrase: "Aller", status: "done", comment: "" },
-    { key: "preview", phrase: "Aperçu", status: "blank", comment: "" },
+    { key: "preview", phrase: "Aperçu", status: "done", comment: "" },
     { key: "directionsNotAvailable", phrase: "Directions Indisponibles", status: "done", comment: "" },
     { key: "directionsNotAvailableFromLocation", phrase: "Les directions ne sont pas disponibles à partir de cet emplacement", status: "done", comment: "" },
     { key: "changeAvoidanceOptions", phrase: "Modifiez les options d'évitement pour obtenir les directions", status: "blank", comment: "" },
@@ -330,7 +303,7 @@ const SECTIONS = JSON.parse(`[
   { id: "parking", label: "Parking", items: [
     { key: "header", phrase: "Voiture Stationnée", status: "blank", comment: "" },
     { key: "location", phrase: "Ceci est mon emplacement de parking", status: "blank", comment: "" },
-    { key: "delete", phrase: "Effacer le Parking", status: "blank", comment: "" },
+    { key: "delete", phrase: "Effacer le Parking", status: "done", comment: "" },
     { key: "timeHead", phrase: "Temps de parking", status: "blank", comment: "" },
     { key: "parking", phrase: "Parking", status: "blank", comment: "" },
     { key: "reached", phrase: "Parking Atteint", status: "blank", comment: "" },
@@ -343,7 +316,7 @@ const SECTIONS = JSON.parse(`[
     { key: "feedback.feedback", phrase: "Avis", status: "done", comment: "" },
     { key: "feedback.title", phrase: "Destination Atteinte!", status: "done", comment: "" },
     { key: "feedback.subtitle", phrase: "Vous êtes arrivé à {destination}", status: "done", comment: "" },
-    { key: "feedback.helpText", phrase: "Aidez-nous à améliorer nos services. Comment s'est déroulée la navigation lors de ce trajet?", status: "howto", comment: "" },
+    { key: "feedback.helpText", phrase: "Aidez-nous à améliorer nos services. Comment s'est déroulée la navigation lors de ce trajet?", status: "done", comment: "" },
     { key: "feedback.done", phrase: "Fait", status: "done", comment: "" },
     { key: "feedback.cancel", phrase: "Annuler", status: "done", comment: "" },
     { key: "feedback.describeIssue", phrase: "Décrivez votre problème avec la navigation lors de ce voyage", status: "done", comment: "" },
@@ -352,18 +325,18 @@ const SECTIONS = JSON.parse(`[
     { key: "arrival", phrase: "Arrivée", status: "done", comment: "" },
   ]},
   { id: "navigationScreen", label: "Navigation Screen", items: [
-    { key: "meter", phrase: "m", status: "blank", comment: "" },
-    { key: "share", phrase: "Partager", status: "blank", comment: "" },
-    { key: "destinationReached", phrase: "Destination atteinte", status: "blank", comment: "" },
-    { key: "exit", phrase: "Quitter", status: "blank", comment: "" },
-    { key: "estTime", phrase: "min", status: "blank", comment: "" },
-    { key: "destTime", phrase: "%d m", status: "blank", comment: "" },
-    { key: "continue", phrase: "Continuer %s", status: "blank", comment: "" },
-    { key: "arrivedAt", phrase: "Vous êtes arrivé à %s", status: "blank", comment: "" },
-    { key: "arrivalTime", phrase: "arrivée", status: "blank", comment: "" },
-    { key: "distanceLabel", phrase: "mètre", status: "blank", comment: "" },
-    { key: "timeRemaining", phrase: "min", status: "blank", comment: "" },
-    { key: "recalculate", phrase: "Recalculer", status: "blank", comment: "" },
+    { key: "meter", phrase: "m", status: "done", comment: "" },
+    { key: "share", phrase: "Partager", status: "done", comment: "" },
+    { key: "destinationReached", phrase: "Destination atteinte", status: "done", comment: "" },
+    { key: "exit", phrase: "Quitter", status: "done", comment: "" },
+    { key: "estTime", phrase: "min", status: "done", comment: "" },
+    { key: "destTime", phrase: "%d m", status: "done", comment: "" },
+    { key: "continue", phrase: "Continuer %s", status: "done", comment: "" },
+    { key: "arrivedAt", phrase: "Vous êtes arrivé à %s", status: "done", comment: "" },
+    { key: "arrivalTime", phrase: "arrivée", status: "done", comment: "" },
+    { key: "distanceLabel", phrase: "mètre", status: "done", comment: "" },
+    { key: "timeRemaining", phrase: "min", status: "done", comment: "" },
+    { key: "recalculate", phrase: "Recalculer", status: "done", comment: "" },
   ]},
   { id: "avoidSheet", label: "Avoid Sheet", items: [
     { key: "avoid", phrase: "Éviter", status: "done", comment: "" },
@@ -433,7 +406,7 @@ const SECTIONS = JSON.parse(`[
     { key: "bluetoothDisabled", phrase: "Le Bluetooth est désactivé sur votre appareil. Voulez-vous l'activer?", status: "blank", comment: "" },
     { key: "grant", phrase: "Accorder", status: "blank", comment: "" },
     { key: "geofenceAlert", phrase: "Cette application utilise le géofencing pour envoyer des alertes et des offres personnalisées basées sur votre localisation.", status: "blank", comment: "" },
-    { key: "later", phrase: "Plus tard", status: "blank", comment: "" },
+    { key: "later", phrase: "Plus tard", status: "done", comment: "" },
     { key: "locationOff.title", phrase: "Services de localisation désactivés", status: "fail", comment: "" },
     { key: "locationOff.subtitle", phrase: "Obtenir des directions lorsque les services de localisation sont activés.", status: "done", comment: "" },
     { key: "locationOff.message", phrase: "Vous pouvez atteindre votre destination estimer les temps de trajet et améliorer les résultats de recherche lorsque vous activez les services de localisation.", status: "done", comment: "" },
@@ -553,12 +526,9 @@ function renderAll() {
     const secDiv = document.createElement('div');
     secDiv.className = 'section';
 
-    const secCounts = { done: 0, fail: 0, howto: 0, blank: 0 };
-    section.items.forEach(it => secCounts[it.status]++);
-
     const header = document.createElement('div');
     header.className = 'section-header';
-    header.innerHTML = `${section.label} <span class="section-badge">${section.items.length} phrases</span>`;
+    header.innerHTML = section.label + ' <span class="section-badge">' + section.items.length + ' phrases</span>';
     secDiv.appendChild(header);
 
     let anyVisible = false;
@@ -571,22 +541,22 @@ function renderAll() {
       const visible = matchesFilter && matchesSearch;
 
       const itemDiv = document.createElement('div');
-      itemDiv.className = `item ${item.status}`;
+      itemDiv.className = 'item ' + item.status;
       if (!visible) itemDiv.classList.add('hidden-item');
       else anyVisible = true;
 
       const main = document.createElement('div');
       main.className = 'item-main';
-      main.innerHTML = `<div class="key-label">${section.id}.${item.key}</div><div class="phrase">${item.phrase}</div>`;
+      main.innerHTML = '<div class="key-label">' + section.id + '.' + item.key + '</div><div class="phrase">' + item.phrase + '</div>';
 
       const controls = document.createElement('div');
       controls.className = 'item-controls';
 
-      ['done','fail','howto','blank'].forEach(s => {
+      ['done','fail','howto','blank'].forEach(function(s) {
         const btn = document.createElement('button');
-        btn.className = 'status-btn' + (item.status === s ? ` active-${s}` : '');
+        btn.className = 'status-btn' + (item.status === s ? ' active-' + s : '');
         btn.textContent = s === 'howto' ? 'How to test' : s.charAt(0).toUpperCase() + s.slice(1);
-        btn.onclick = () => setStatus(section.id, item.key, s);
+        btn.onclick = (function(sid, k, st){ return function(){ setStatus(sid, k, st); }; })(section.id, item.key, s);
         controls.appendChild(btn);
       });
 
@@ -597,11 +567,11 @@ function renderAll() {
       commentInput.className = 'comment-input';
       commentInput.placeholder = 'Why is it failing?';
       commentInput.value = item.comment || '';
-      commentInput.oninput = e => setComment(section.id, item.key, e.target.value);
+      commentInput.oninput = (function(sid, k){ return function(e){ setComment(sid, k, e.target.value); }; })(section.id, item.key);
       commentWrap.appendChild(commentInput);
 
       const wrapper = document.createElement('div');
-      wrapper.style.cssText = 'display:flex; flex-direction:column; flex:1;';
+      wrapper.style.cssText = 'display:flex;flex-direction:column;flex:1;';
       wrapper.appendChild(main);
       wrapper.appendChild(commentWrap);
 
@@ -616,20 +586,18 @@ function renderAll() {
     container.appendChild(secDiv);
   });
 
-  // Stats
-  const pct = n => counts.total ? Math.round(n / counts.total * 100) : 0;
-  document.getElementById('statsBar').innerHTML = `
-    <span class="s-done">✓ Done: ${counts.done} (${pct(counts.done)}%)</span>
-    <span class="s-fail">✗ Fail: ${counts.fail}</span>
-    <span class="s-howto">? How to test: ${counts.howto}</span>
-    <span class="s-blank">– Blank: ${counts.blank}</span>
-    <span>Total: ${counts.total}</span>
-  `;
+  var pct = function(n){ return counts.total ? Math.round(n / counts.total * 100) : 0; };
+  document.getElementById('statsBar').innerHTML =
+    '<span class="s-done">✓ Done: ' + counts.done + ' (' + pct(counts.done) + '%)</span>' +
+    '<span class="s-fail">✗ Fail: ' + counts.fail + '</span>' +
+    '<span class="s-howto">? How to test: ' + counts.howto + '</span>' +
+    '<span class="s-blank">– Blank: ' + counts.blank + '</span>' +
+    '<span>Total: ' + counts.total + '</span>';
 }
 
 function setFilter(val, btn) {
   currentFilter = val;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
   renderAll();
 }
@@ -642,13 +610,13 @@ function saveLocal() {
 
 function loadLocal() {
   try {
-    const saved = JSON.parse(localStorage.getItem('fr-checklist'));
+    var saved = JSON.parse(localStorage.getItem('fr-checklist'));
     if (!saved) return;
-    saved.forEach(savedSec => {
-      const sec = SECTIONS.find(s => s.id === savedSec.id);
+    saved.forEach(function(savedSec) {
+      var sec = SECTIONS.find(function(s){ return s.id === savedSec.id; });
       if (!sec) return;
-      savedSec.items.forEach(savedItem => {
-        const item = sec.items.find(i => i.key === savedItem.key);
+      savedSec.items.forEach(function(savedItem) {
+        var item = sec.items.find(function(i){ return i.key === savedItem.key; });
         if (item) { item.status = savedItem.status; item.comment = savedItem.comment || ''; }
       });
     });
@@ -656,12 +624,11 @@ function loadLocal() {
 }
 
 function exportData() {
-  const export_data = SECTIONS.map(s => ({
-    id: s.id, label: s.label,
-    items: s.items.map(i => ({ key: i.key, phrase: i.phrase, status: i.status, comment: i.comment }))
-  }));
-  const blob = new Blob([JSON.stringify(export_data, null, 2)], {type:'application/json'});
-  const a = document.createElement('a');
+  var data = SECTIONS.map(function(s) {
+    return { id: s.id, label: s.label, items: s.items.map(function(i){ return { key: i.key, phrase: i.phrase, status: i.status, comment: i.comment }; }) };
+  });
+  var blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'fr-translation-checklist.json';
   a.click();
@@ -669,23 +636,23 @@ function exportData() {
 
 function importClick() { document.getElementById('importFile').click(); }
 function importData(e) {
-  const file = e.target.files[0];
+  var file = e.target.files[0];
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
+  var reader = new FileReader();
+  reader.onload = function(ev) {
     try {
-      const data = JSON.parse(ev.target.result);
-      data.forEach(savedSec => {
-        const sec = SECTIONS.find(s => s.id === savedSec.id);
+      var data = JSON.parse(ev.target.result);
+      data.forEach(function(savedSec) {
+        var sec = SECTIONS.find(function(s){ return s.id === savedSec.id; });
         if (!sec) return;
-        savedSec.items.forEach(savedItem => {
-          const item = sec.items.find(i => i.key === savedItem.key);
+        savedSec.items.forEach(function(savedItem) {
+          var item = sec.items.find(function(i){ return i.key === savedItem.key; });
           if (item) { item.status = savedItem.status; item.comment = savedItem.comment || ''; }
         });
       });
       renderAll();
       saveLocal();
-    } catch { alert('Invalid JSON file.'); }
+    } catch(err) { alert('Invalid JSON file.'); }
   };
   reader.readAsText(file);
   e.target.value = '';
