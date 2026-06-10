@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Malay Translation Checklist</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #0d1117;
+    color: #c9d1d9;
+    padding: 24px;
+    min-height: 100vh;
+  }
+  h1 { text-align: center; font-size: 1.4rem; margin-bottom: 6px; color: #e6edf3; }
+  .subtitle { text-align: center; font-size: 0.82rem; color: #6e7681; margin-bottom: 14px; }
+
+  .lang-nav {
+    display: flex; gap: 8px; justify-content: center; margin-bottom: 20px;
+  }
+  .lang-btn {
+    padding: 5px 16px; border-radius: 6px; border: 1px solid #30363d;
+    cursor: pointer; font-size: 0.82rem; background: #161b22; color: #8b949e;
+    text-decoration: none; transition: all 0.15s;
+  }
+  .lang-btn:hover { border-color: #8b949e; color: #c9d1d9; }
+  .lang-btn.active { background: #1f3a5f; border-color: #58a6ff; color: #58a6ff; }
+
+  .legend {
+    display: flex; gap: 18px; margin-bottom: 18px; flex-wrap: wrap; justify-content: center;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; color: #8b949e; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+
+  .stats-bar {
+    display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+    margin-bottom: 22px; font-size: 0.82rem;
+  }
+  .stats-bar span {
+    padding: 3px 12px; border-radius: 20px; background: #161b22; border: 1px solid #30363d;
+  }
+  .s-done  { color: #3fb950; border-color: #2ea04388 !important; }
+  .s-fail  { color: #f85149; border-color: #f8514966 !important; }
+  .s-howto { color: #e3a030; border-color: #e3a03066 !important; }
+  .s-blank { color: #6e7681; }
+
+  .toolbar {
+    display: flex; gap: 8px; margin-bottom: 22px; flex-wrap: wrap; align-items: center;
+    justify-content: center;
+  }
+  .toolbar input[type=text] {
+    padding: 6px 12px; border-radius: 6px; border: 1px solid #30363d;
+    background: #161b22; color: #c9d1d9; font-size: 0.85rem; width: 220px;
+  }
+  .toolbar input[type=text]::placeholder { color: #484f58; }
+  .btn {
+    padding: 6px 14px; border-radius: 6px; border: 1px solid #30363d;
+    cursor: pointer; font-size: 0.82rem; background: #21262d; color: #c9d1d9;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .btn:hover { background: #30363d; border-color: #8b949e; }
+  .btn-primary { background: #238636; border-color: #2ea043; color: #fff; }
+  .btn-primary:hover { background: #2ea043; }
+
+  .section { margin-bottom: 28px; }
+  .section-header {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 1.2px;
+    text-transform: uppercase; color: #484f58; padding: 6px 0 8px;
+    border-bottom: 1px solid #21262d; margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-badge {
+    font-size: 0.68rem; background: #161b22; border: 1px solid #30363d;
+    border-radius: 10px; padding: 1px 7px; color: #6e7681; font-weight: 400;
+  }
+
+  .item {
+    display: flex; align-items: flex-start;
+    border-left: 3px solid transparent;
+    background: #0d1117; border-bottom: 1px solid #161b22;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .item:hover { background: #161b22; }
+  .item.blank  { border-left-color: #30363d; }
+  .item.done   { border-left-color: #2ea043; background: #0a1f0d; }
+  .item.done:hover { background: #0d2610; }
+  .item.fail   { border-left-color: #da3633; background: #1f0a0a; }
+  .item.fail:hover { background: #261010; }
+  .item.howto  { border-left-color: #9e6a03; background: #1a1400; }
+  .item.howto:hover { background: #1f1900; }
+
+  .item-main { flex: 1; padding: 8px 10px; min-width: 0; }
+  .key-label { font-size: 0.72rem; color: #484f58; font-family: monospace; margin-bottom: 2px; }
+  .phrase { font-size: 0.88rem; word-break: break-word; line-height: 1.4; }
+  .item.blank  .phrase { color: #6e7681; }
+  .item.done   .phrase { color: #3fb950; }
+  .item.fail   .phrase { color: #f85149; }
+  .item.howto  .phrase { color: #d29922; }
+
+  .item-controls {
+    display: flex; align-items: center; gap: 4px; padding: 8px 8px 8px 0; flex-shrink: 0;
+  }
+  .status-btn {
+    padding: 3px 8px; border-radius: 4px; border: 1px solid #30363d;
+    cursor: pointer; font-size: 0.72rem; background: #161b22; color: #8b949e;
+    transition: all 0.15s; white-space: nowrap;
+  }
+  .status-btn:hover { border-color: #8b949e; color: #c9d1d9; }
+  .status-btn.active-done   { background: #0d3320; border-color: #2ea043; color: #3fb950; }
+  .status-btn.active-fail   { background: #3d0c0c; border-color: #da3633; color: #f85149; }
+  .status-btn.active-howto  { background: #2d1f00; border-color: #9e6a03; color: #d29922; }
+  .status-btn.active-blank  { background: #21262d; border-color: #484f58; color: #6e7681; }
+
+  .comment-wrap { padding: 0 10px 8px 10px; display: none; }
+  .comment-wrap.visible { display: block; }
+  .comment-input {
+    width: 100%; padding: 6px 10px; border-radius: 5px;
+    border: 1px solid #da363366; background: #1f0a0a;
+    color: #f88; font-size: 0.82rem; resize: vertical;
+    min-height: 44px; font-family: inherit;
+  }
+  .comment-input::placeholder { color: #7a3535; }
+
+  .filter-bar {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; align-items: center;
+  }
+  .filter-bar label { font-size: 0.8rem; color: #6e7681; }
+  .filter-btn {
+    padding: 3px 10px; border-radius: 12px; border: 1px solid #30363d;
+    cursor: pointer; font-size: 0.78rem; background: #161b22; color: #8b949e;
+    transition: all 0.15s;
+  }
+  .filter-btn.active { border-color: #58a6ff; color: #58a6ff; background: #0d2d6e33; }
+  .filter-btn:hover { border-color: #8b949e; }
+
+  .hidden-item { display: none !important; }
+  #searchBox { width: 200px; }
+</style>
+</head>
+<body>
+
+<h1>Malay (BM) Translation Checklist</h1>
+<p class="subtitle">Click a status button on any row to update it. Fail rows show a comment field.</p>
+
+<div class="lang-nav">
+  <a class="lang-btn" href="index.html">🇫🇷 French</a>
+  <a class="lang-btn active" href="ms-checklist.html">🇲🇾 Malay (BM)</a>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#2ea043"></div>Done</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#f85149"></div>Fail</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#d29922"></div>How to test</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#30363d"></div>Blank / Not tested</div>
+</div>
+
+<div class="stats-bar" id="statsBar"></div>
+
+<div class="toolbar">
+  <input type="text" id="searchBox" placeholder="Search phrases..." oninput="applyFilters()" />
+  <button class="btn btn-primary" onclick="exportData()">Export JSON</button>
+  <button class="btn" onclick="importClick()">Import JSON</button>
+  <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)"/>
+</div>
+
+<div class="filter-bar">
+  <label>Filter:</label>
+  <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">All</button>
+  <button class="filter-btn" data-filter="blank" onclick="setFilter('blank',this)">Blank</button>
+  <button class="filter-btn" data-filter="done" onclick="setFilter('done',this)">Done</button>
+  <button class="filter-btn" data-filter="fail" onclick="setFilter('fail',this)">Fail</button>
+  <button class="filter-btn" data-filter="howto" onclick="setFilter('howto',this)">How to test</button>
+</div>
+
+<div id="checklist"></div>
+
+<script>
+const SECTIONS = [
+  { id: "common", label: "Common", items: [
+    { key: "done", phrase: "Selesai", status: "blank", comment: "" },
+    { key: "cancel", phrase: "Batal", status: "done", comment: "" },
+    { key: "ok", phrase: "OK", status: "done", comment: "" },
+    { key: "yes", phrase: "Ya", status: "done", comment: "" },
+    { key: "no", phrase: "Tidak", status: "blank", comment: "" },
+    { key: "retry", phrase: "Cuba Semula", status: "blank", comment: "" },
+    { key: "settings", phrase: "Tetapan", status: "blank", comment: "" },
+    { key: "ignore", phrase: "Abaikan", status: "done", comment: "" },
+    { key: "confirm", phrase: "Sahkan", status: "blank", comment: "" },
+    { key: "campus", phrase: "Kampus", status: "blank", comment: "" },
+    { key: "venue", phrase: "Tempat", status: "blank", comment: "" },
+    { key: "venues", phrase: "Tempat-tempat", status: "blank", comment: "" },
+    { key: "floors", phrase: "Tingkat-tingkat", status: "blank", comment: "" },
+    { key: "floor", phrase: "Tingkat", status: "blank", comment: "" },
+    { key: "meter", phrase: "m", status: "blank", comment: "" },
+    { key: "loading", phrase: "Memuatkan...", status: "blank", comment: "" },
+    { key: "back", phrase: "Kembali", status: "blank", comment: "" },
+    { key: "remove", phrase: "Buang", status: "blank", comment: "" },
+  ]},
+  { id: "auth", label: "Auth", items: [
+    { key: "login", phrase: "Log Masuk", status: "done", comment: "" },
+    { key: "loginUsername", phrase: "Nama pengguna atau E-mel", status: "done", comment: "" },
+    { key: "password", phrase: "Kata laluan", status: "done", comment: "" },
+    { key: "emailInvalid", phrase: "Nama pengguna atau e-mel tidak sah", status: "done", comment: "" },
+    { key: "passwordInvalid", phrase: "Kata laluan tidak sah", status: "done", comment: "" },
+    { key: "selectCampus", phrase: "Pilih Kampus Anda", status: "done", comment: "" },
+    { key: "changeCampus", phrase: "Pilih Kampus", status: "done", comment: "" },
+    { key: "noCampusDetails", phrase: "Tiada butiran kampus yang dijumpai untuk klien ini. Sila hubungi pasukan sokongan.", status: "done", comment: "" },
+    { key: "invalidCampusId", phrase: "ID Kampus tidak sah. Sila masukkan ID Kampus yang sah.", status: "done", comment: "" },
+    { key: "guestLogin", phrase: "Log Masuk sebagai Tetamu", status: "done", comment: "" },
+    { key: "qrCode", phrase: "Kod QR", status: "done", comment: "" },
+    { key: "scanQrCode", phrase: "Imbas Kod QR", status: "done", comment: "" },
+    { key: "errorQrCode", phrase: "Ralat dalam kod Qr", status: "done", comment: "" },
+    { key: "termsPrivacy", phrase: "Terma Perkhidmatan & Polisi Privasi", status: "done", comment: "" },
+  ]},
+  { id: "messages", label: "Messages", items: [
+    { key: "notFound", phrase: "Tidak Dijumpai", status: "blank", comment: "" },
+    { key: "featureTypeNotFound", phrase: "Jenis ciri tidak dijumpai", status: "blank", comment: "" },
+    { key: "serviceNotAvailable", phrase: "Perkhidmatan Tidak Tersedia", status: "blank", comment: "" },
+    { key: "serviceNotAvailableSubtext", phrase: "Perkhidmatan kini tidak tersedia. Sila cuba lagi kemudian.", status: "blank", comment: "" },
+    { key: "connectionError", phrase: "Ralat Sambungan", status: "blank", comment: "" },
+    { key: "errorRetrievingData", phrase: "Ralat semasa mendapatkan data", status: "blank", comment: "" },
+    { key: "routeNotDetected", phrase: "Laluan belum dikesan lagi", status: "blank", comment: "" },
+    { key: "errorWhileDetection", phrase: "Ralat Semasa Pengesanan Laluan", status: "blank", comment: "" },
+    { key: "permissionDenied", phrase: "Ralat: Satu atau lebih kebenaran yang diperlukan seperti lokasi dan Bluetooth tidak diberikan. Sila dayakan kebenaran yang diperlukan untuk meneruskan", status: "blank", comment: "" },
+    { key: "noDirectionFromLocation", phrase: "Arah tidak lagi tersedia dari lokasi anda", status: "blank", comment: "" },
+  ]},
+  { id: "toast", label: "Toast", items: [
+    { key: "switchToMobileData", phrase: "Tukar ke data mudah alih", status: "done", comment: "" },
+    { key: "switchToMobileDataPopup", phrase: "Untuk ketepatan penentuan kedudukan yang lebih baik kami mengesyorkan anda beralih ke sambungan data mudah alih.", status: "done", comment: "" },
+    { key: "connectionError", phrase: "Ralat Sambungan", status: "done", comment: "" },
+    { key: "connectionErrorPopup", phrase: "Ralat berlaku semasa menyambung ke pelayan.", status: "done", comment: "" },
+    { key: "locationServicesOff", phrase: "Perkhidmatan Lokasi dimatikan", status: "blank", comment: "" },
+    { key: "locationServicesOffPopup", phrase: "Anda boleh sampai ke destinasi menganggar masa perjalanan dan meningkatkan hasil carian apabila anda menghidupkan perkhidmatan lokasi.", status: "blank", comment: "" },
+    { key: "bluetoothServicesOff", phrase: "Perkhidmatan Bluetooth dimatikan", status: "blank", comment: "" },
+    { key: "bluetoothServicesOffPopup", phrase: "Anda akan mendapat arahan pusingan demi pusingan anggaran masa perjalanan dan hasil carian yang lebih baik apabila anda menghidupkan perkhidmatan Bluetooth.", status: "blank", comment: "" },
+  ]},
+  { id: "exploration", label: "Exploration", items: [
+    { key: "home", phrase: "Laman Utama", status: "done", comment: "" },
+    { key: "directory", phrase: "Direktori", status: "done", comment: "" },
+    { key: "directoryTitle", phrase: "Direktori", status: "done", comment: "" },
+    { key: "favorites", phrase: "Kegemaran", status: "done", comment: "" },
+    { key: "myLocation", phrase: "Lokasi Saya", status: "done", comment: "" },
+    { key: "search", phrase: "Cari", status: "done", comment: "" },
+    { key: "seeAll", phrase: "Lihat semua", status: "done", comment: "" },
+    { key: "shareMyLocation", phrase: "Kongsi Lokasi Saya", status: "done", comment: "" },
+    { key: "markMyLocationAsParking", phrase: "Tandakan lokasi saya sebagai tempat letak kereta", status: "done", comment: "" },
+    { key: "markAsParking", phrase: "Tandakan sebagai tempat letak kereta", status: "done", comment: "" },
+    { key: "currentLocation", phrase: "Ini adalah lokasi saya yang sekarang", status: "done", comment: "" },
+  ]},
+  { id: "sheets", label: "Sheets", items: [
+    { key: "directions", phrase: "Arah", status: "done", comment: "" },
+    { key: "distance", phrase: "Jarak", status: "done", comment: "" },
+    { key: "address", phrase: "Alamat", status: "done", comment: "" },
+    { key: "operatingHours", phrase: "Waktu Operasi", status: "done", comment: "" },
+    { key: "hours", phrase: "Waktu", status: "done", comment: "" },
+    { key: "open", phrase: "Buka", status: "done", comment: "" },
+    { key: "closed", phrase: "Tutup", status: "done", comment: "" },
+    { key: "opens", phrase: "Dibuka", status: "done", comment: "" },
+    { key: "closedToday", phrase: "Tutup Hari Ini", status: "done", comment: "" },
+    { key: "goodToKnow", phrase: "Baik Diketahui", status: "done", comment: "" },
+    { key: "amenities", phrase: "Kemudahan", status: "done", comment: "" },
+    { key: "more", phrase: "Lagi", status: "done", comment: "" },
+    { key: "contacts", phrase: "Kenalan", status: "done", comment: "" },
+    { key: "about", phrase: "Tentang", status: "done", comment: "" },
+    { key: "addToFavorites", phrase: "Tambah ke Kegemaran", status: "done", comment: "" },
+    { key: "removeFromFavorites", phrase: "Buang dari Kegemaran", status: "done", comment: "" },
+    { key: "details", phrase: "Butiran", status: "done", comment: "" },
+    { key: "website", phrase: "Laman Web", status: "done", comment: "" },
+    { key: "mail", phrase: "Mel", status: "done", comment: "" },
+    { key: "phone", phrase: "Telefon", status: "done", comment: "" },
+    { key: "call", phrase: "Panggil", status: "done", comment: "" },
+    { key: "email", phrase: "E-mel", status: "done", comment: "" },
+    { key: "reportAnIssue", phrase: "Laporkan Masalah", status: "done", comment: "" },
+  ]},
+  { id: "floorSelector", label: "Floor Selector", items: [
+    { key: "chooseAFloor", phrase: "Pilih Tingkat", status: "done", comment: "" },
+    { key: "selectedVenue", phrase: "Tempat yang Dipilih", status: "done", comment: "" },
+    { key: "floorMaps", phrase: "Peta Tingkat", status: "blank", comment: "" },
+    { key: "changingFloor", phrase: "Menukar Tingkat", status: "blank", comment: "" },
+    { key: "connectedVenues", phrase: "Tempat-tempat Bersambung", status: "blank", comment: "" },
+  ]},
+  { id: "categorysheet", label: "Category Sheet", items: [
+    { key: "noPlaces", phrase: "Tiada tempat dalam kategori ini di lokasi ini", status: "done", comment: "" },
+    { key: "noPoi", phrase: "Semak lokasi lain untuk mencari tempat", status: "done", comment: "" },
+    { key: "title", phrase: "Kategori", status: "done", comment: "" },
+    { key: "empty", phrase: "Tiada tempat dalam kategori ini di lokasi ini", status: "done", comment: "" },
+    { key: "emptyExplore", phrase: "Coba jelajahi lokasi lain untuk mencari tempat", status: "done", comment: "" },
+  ]},
+  { id: "directionsSheet", label: "Directions Sheet", items: [
+    { key: "myLocation", phrase: "Lokasi Saya", status: "done", comment: "" },
+    { key: "addParking", phrase: "Tambah Tempat Letak Kereta", status: "done", comment: "" },
+    { key: "addStop", phrase: "Tambah Hentian", status: "done", comment: "" },
+    { key: "addingParking", phrase: "Mencari Tempat Letak Kereta", status: "blank", comment: "" },
+    { key: "parkingUnavailable", phrase: "Tempat letak kereta kini tidak tersedia. Sila cuba lagi sebentar", status: "blank", comment: "" },
+    { key: "parkingSave", phrase: "Adakah anda ingin menyimpan lokasi tempat letak kereta anda?", status: "blank", comment: "" },
+    { key: "bestRouteShown", phrase: "Laluan terbaik ditunjukkan. Tidak semua keutamaan dipenuhi.", status: "blank", comment: "" },
+    { key: "go", phrase: "Pergi", status: "done", comment: "" },
+    { key: "preview", phrase: "Pratonton", status: "done", comment: "" },
+    { key: "directionsNotAvailable", phrase: "Arah Tidak Tersedia", status: "blank", comment: "" },
+    { key: "directionsNotAvailableFromLocation", phrase: "Arah tidak tersedia dari lokasi ini", status: "blank", comment: "" },
+    { key: "changeAvoidanceOptions", phrase: "Tukar pilihan elak untuk mendapatkan arah", status: "blank", comment: "" },
+    { key: "endTrip", phrase: "Tamatkan Perjalanan", status: "blank", comment: "" },
+  ]},
+  { id: "stopSheet", label: "Stop Sheet", items: [
+    { key: "stopReached", phrase: "Hentian (%s) Dicapai", status: "blank", comment: "" },
+    { key: "stops", phrase: "Hentian", status: "blank", comment: "" },
+    { key: "addStop", phrase: "Tambah Hentian", status: "blank", comment: "" },
+    { key: "changeStop", phrase: "Tukar Hentian", status: "blank", comment: "" },
+    { key: "resultStations", phrase: "Keputusan", status: "blank", comment: "" },
+    { key: "addStartStation", phrase: "Pilih stesen permulaan", status: "blank", comment: "" },
+  ]},
+  { id: "parking", label: "Parking", items: [
+    { key: "header", phrase: "Kereta yang Diletakkan", status: "blank", comment: "" },
+    { key: "location", phrase: "Ini adalah lokasi tempat letak kereta saya", status: "blank", comment: "" },
+    { key: "delete", phrase: "Kosongkan Tempat Letak Kereta", status: "done", comment: "" },
+    { key: "timeHead", phrase: "Masa letak kereta", status: "done", comment: "" },
+    { key: "parking", phrase: "Tempat Letak Kereta", status: "done", comment: "" },
+    { key: "reached", phrase: "Tempat Letak Kereta Dicapai", status: "done", comment: "" },
+    { key: "secAgo", phrase: "baru saja", status: "blank", comment: "" },
+    { key: "available", phrase: "Tempat letak kereta kini tidak tersedia. Anda akan diarahkan terus ke destinasi anda", status: "blank", comment: "" },
+    { key: "noAvailable", phrase: "Tiada Tempat Letak Kereta Tersedia", status: "blank", comment: "" },
+    { key: "tapContinue", phrase: "Ketik \"Teruskan\" selepas anda selesai letak kereta", status: "blank", comment: "" },
+  ]},
+  { id: "navigationSheet", label: "Navigation Sheet", items: [
+    { key: "feedback.feedback", phrase: "Maklum Balas", status: "done", comment: "" },
+    { key: "feedback.title", phrase: "Destinasi Dicapai!", status: "done", comment: "" },
+    { key: "feedback.subtitle", phrase: "Anda telah tiba di {destination}", status: "done", comment: "" },
+    { key: "feedback.helpText", phrase: "Bantu tingkatkan perkhidmatan kami. Bagaimana navigasi dalam perjalanan ini?", status: "done", comment: "" },
+    { key: "feedback.done", phrase: "Selesai", status: "done", comment: "" },
+    { key: "feedback.cancel", phrase: "Batal", status: "done", comment: "" },
+    { key: "feedback.describeIssue", phrase: "Terangkan masalah anda dengan navigasi dalam perjalanan ini", status: "done", comment: "" },
+    { key: "feedback.enterReason", phrase: "Masukkan sebab anda", status: "done", comment: "" },
+    { key: "min", phrase: "min", status: "done", comment: "" },
+    { key: "arrival", phrase: "Ketibaan", status: "done", comment: "" },
+  ]},
+  { id: "navigationScreen", label: "Navigation Screen", items: [
+    { key: "meter", phrase: "m", status: "done", comment: "" },
+    { key: "share", phrase: "Kongsi", status: "done", comment: "" },
+    { key: "destinationReached", phrase: "Destinasi dicapai", status: "blank", comment: "" },
+    { key: "exit", phrase: "Keluar", status: "blank", comment: "" },
+    { key: "estTime", phrase: "min", status: "done", comment: "" },
+    { key: "destTime", phrase: "%d m", status: "fail", comment: "" },
+    { key: "continue", phrase: "Teruskan %s", status: "done", comment: "" },
+    { key: "arrivedAt", phrase: "Anda telah tiba di %s", status: "howto", comment: "" },
+    { key: "arrivalTime", phrase: "ketibaan", status: "howto", comment: "" },
+    { key: "distanceLabel", phrase: "meter", status: "done", comment: "" },
+    { key: "timeRemaining", phrase: "min", status: "done", comment: "" },
+    { key: "recalculate", phrase: "Kira Semula", status: "done", comment: "" },
+  ]},
+  { id: "avoidSheet", label: "Avoid Sheet", items: [
+    { key: "avoid", phrase: "Elak", status: "done", comment: "" },
+    { key: "avoidNum", phrase: "Elak (%s)", status: "done", comment: "" },
+    { key: "avoidStairs", phrase: "Elak Tangga", status: "done", comment: "" },
+    { key: "avoidRamps", phrase: "Elak Tanjakan", status: "done", comment: "" },
+    { key: "avoidEscalators", phrase: "Elak Eskalator", status: "done", comment: "" },
+    { key: "avoidElevators", phrase: "Elak Lif", status: "done", comment: "" },
+    { key: "avoidOutdoor", phrase: "Elak Luar Ruangan", status: "done", comment: "" },
+    { key: "avoidIndoor", phrase: "Elak Dalam Ruangan", status: "done", comment: "" },
+    { key: "apply", phrase: "Guna", status: "done", comment: "" },
+    { key: "cancel", phrase: "Batal", status: "done", comment: "" },
+  ]},
+  { id: "transportationMode", label: "Transportation Mode", items: [
+    { key: "walk", phrase: "Jalan", status: "done", comment: "" },
+    { key: "car", phrase: "Kereta", status: "done", comment: "" },
+    { key: "transit", phrase: "Transit", status: "done", comment: "" },
+    { key: "cycle", phrase: "Basikal", status: "done", comment: "" },
+    { key: "ride", phrase: "Tumpang", status: "done", comment: "" },
+    { key: "drive", phrase: "Memandu", status: "done", comment: "" },
+  ]},
+  { id: "searchSheet", label: "Search Sheet", items: [
+    { key: "searching", phrase: "Mencari...", status: "done", comment: "" },
+    { key: "noSearchFirstLine", phrase: "Tiada tempat yang sepadan dijumpai", status: "blank", comment: "" },
+    { key: "noSearchSecondLine", phrase: "Cuba cari item carian yang lain", status: "blank", comment: "" },
+    { key: "clear", phrase: "Kosongkan", status: "done", comment: "" },
+    { key: "openNow", phrase: "Buka Sekarang", status: "done", comment: "" },
+    { key: "categories", phrase: "Kategori", status: "done", comment: "" },
+    { key: "amenities", phrase: "Kemudahan", status: "done", comment: "" },
+    { key: "sortByDistance", phrase: "Susun mengikut Jarak", status: "done", comment: "" },
+    { key: "sortByMatch", phrase: "Susun mengikut Padanan Terbaik", status: "done", comment: "" },
+    { key: "filter", phrase: "Tapis", status: "done", comment: "" },
+    { key: "bestMatch", phrase: "Padanan Terbaik", status: "done", comment: "" },
+    { key: "apply", phrase: "Guna", status: "done", comment: "" },
+    { key: "popular", phrase: "Popular", status: "done", comment: "" },
+    { key: "nearby", phrase: "Berdekatan", status: "done", comment: "" },
+  ]},
+  { id: "navigationInstructions", label: "Navigation Instructions", items: [
+    { key: "goStraight", phrase: "Pergi Lurus", status: "blank", comment: "" },
+    { key: "goBackwards", phrase: "Pusing balik dan teruskan", status: "blank", comment: "" },
+    { key: "turnRight", phrase: "Belok kanan", status: "blank", comment: "" },
+    { key: "turnLeft", phrase: "Belok kiri", status: "blank", comment: "" },
+    { key: "slightTurnRight", phrase: "Belok sedikit ke kanan", status: "blank", comment: "" },
+    { key: "slightTurnLeft", phrase: "Belok sedikit ke kiri", status: "blank", comment: "" },
+    { key: "sharpRight", phrase: "Belok tajam ke kanan", status: "blank", comment: "" },
+    { key: "sharpLeft", phrase: "Belok tajam ke kiri", status: "blank", comment: "" },
+    { key: "goAhead", phrase: "Teruskan ke hadapan", status: "blank", comment: "" },
+    { key: "destReach", phrase: "untuk mencapai destinasi", status: "blank", comment: "" },
+    { key: "distanceInst", phrase: "untuk %s meter", status: "blank", comment: "" },
+    { key: "destReachInst", phrase: "Pergi lurus untuk mencapai destinasi", status: "blank", comment: "" },
+  ]},
+  { id: "sharing", label: "Sharing", items: [
+    { key: "from", phrase: "Dari %s ke %s", status: "blank", comment: "" },
+    { key: "timeAndMode", phrase: "%s minit dengan %s", status: "blank", comment: "" },
+    { key: "asText", phrase: "Sebagai teks", status: "done", comment: "" },
+    { key: "asPdf", phrase: "Sebagai PDF", status: "done", comment: "" },
+    { key: "sharedRoute", phrase: "Laluan yang dikongsi:", status: "blank", comment: "" },
+    { key: "sharedLocation", phrase: "Lokasi yang Dikongsi", status: "blank", comment: "" },
+    { key: "sharedLocationDetails", phrase: "Butiran", status: "blank", comment: "" },
+  ]},
+  { id: "permissions", label: "Permissions", items: [
+    { key: "bluetoothAccess", phrase: "Aplikasi ini memerlukan akses ke lokasi dan Bluetooth anda untuk berfungsi dengan baik", status: "blank", comment: "" },
+    { key: "goToSettings", phrase: "Sila pergi ke tetapan aplikasi untuk memberikan kebenaran ini.", status: "blank", comment: "" },
+    { key: "settings", phrase: "Pergi ke tetapan", status: "done", comment: "" },
+    { key: "gpsDisabled", phrase: "GPS dilumpuhkan dalam peranti anda. Adakah anda ingin mengaktifkannya?", status: "done", comment: "" },
+    { key: "enable", phrase: "Aktifkan", status: "done", comment: "" },
+    { key: "bluetoothDisabled", phrase: "Bluetooth dilumpuhkan dalam peranti anda. Adakah anda ingin mengaktifkannya?", status: "done", comment: "" },
+    { key: "grant", phrase: "Berikan", status: "blank", comment: "" },
+    { key: "geofenceAlert", phrase: "Aplikasi ini menggunakan geofencing untuk menghantar amaran dan tawaran yang dipersonalisasi berdasarkan lokasi anda. Untuk memastikan ini berfungsi dengan baik sila tukar kebenaran lokasi kepada 'Sentiasa benarkan' dalam peranti anda", status: "done", comment: "" },
+    { key: "later", phrase: "Kemudian", status: "done", comment: "" },
+    { key: "locationOff.title", phrase: "Perkhidmatan Lokasi dimatikan", status: "done", comment: "" },
+    { key: "locationOff.subtitle", phrase: "Dapatkan arah apabila Perkhidmatan Lokasi dihidupkan.", status: "done", comment: "" },
+    { key: "locationOff.message", phrase: "Anda dapat mencapai destinasi anda menganggar masa perjalanan dan meningkatkan hasil carian apabila anda menghidupkan Perkhidmatan Lokasi.", status: "done", comment: "" },
+    { key: "locationOff.btnYes", phrase: "Hidupkan dalam Tetapan", status: "done", comment: "" },
+    { key: "locationOff.btnNo", phrase: "Biarkan Perkhidmatan Lokasi Dimatikan", status: "done", comment: "" },
+    { key: "bluetoothOff.title", phrase: "Perkhidmatan Bluetooth dimatikan", status: "done", comment: "" },
+    { key: "bluetoothOff.subtitle", phrase: "PenNav berfungsi terbaik dengan perkhidmatan Bluetooth dihidupkan.", status: "done", comment: "" },
+    { key: "bluetoothOff.message", phrase: "Anda akan mendapat arah pusingan demi pusingan masa perjalanan yang dianggarkan dan hasil carian yang lebih baik apabila anda menghidupkan perkhidmatan Bluetooth", status: "done", comment: "" },
+    { key: "bluetoothOff.btnYes", phrase: "Hidupkan dalam Tetapan", status: "done", comment: "" },
+    { key: "bluetoothOff.btnNo", phrase: "Biarkan Perkhidmatan Bluetooth Dimatikan", status: "done", comment: "" },
+    { key: "uncoveredArea.title", phrase: "Ketepatan lokasi terhad", status: "blank", comment: "" },
+    { key: "uncoveredArea.message", phrase: "Ketepatan navigasi mungkin terhad di kawasan anda.", status: "blank", comment: "" },
+    { key: "uncoveredArea.btn", phrase: "Baiklah", status: "blank", comment: "" },
+    { key: "findingLocation.title", phrase: "Lokasi hilang", status: "blank", comment: "" },
+    { key: "findingLocation.message", phrase: "Nampaknya ada masalah mengesan lokasi anda", status: "blank", comment: "" },
+    { key: "findingLocation.btnRetry", phrase: "Cuba Semula", status: "blank", comment: "" },
+    { key: "findingLocation.btnContinue", phrase: "Teruskan tanpa lokasi", status: "blank", comment: "" },
+    { key: "findingLocation.btnOk", phrase: "OK", status: "blank", comment: "" },
+  ]},
+  { id: "geofence", label: "Geofence", items: [
+    { key: "startGeofence", phrase: "Mulai Geofence", status: "blank", comment: "" },
+    { key: "startedGeofence", phrase: "Geofence Dimulai", status: "blank", comment: "" },
+    { key: "failedStart", phrase: "Geofence Gagal Dimulai", status: "blank", comment: "" },
+    { key: "stopGeofence", phrase: "Hentikan Geofence", status: "blank", comment: "" },
+    { key: "stoppedGeofence", phrase: "Geofence Dihentikan", status: "blank", comment: "" },
+    { key: "updateGeofence", phrase: "Kemas Kini Geofence", status: "blank", comment: "" },
+    { key: "updatedGeofence", phrase: "Geofence Dikemas Kini", status: "blank", comment: "" },
+    { key: "geofence", phrase: "Geofence", status: "blank", comment: "" },
+    { key: "indoorError", phrase: "Geofence tidak boleh digunakan dalam penggunaan dalaman", status: "blank", comment: "" },
+    { key: "startBeforeUpdate", phrase: "Ralat: Sila mulai SDK geofence sebelum memanggil kemas kini", status: "blank", comment: "" },
+    { key: "alreadyRunning", phrase: "SDK Geofence sudah berjalan. Sila panggil updateGeofencing untuk mengemas kini data", status: "blank", comment: "" },
+  ]},
+  { id: "ar", label: "AR", items: [
+    { key: "ar", phrase: "AR", status: "blank", comment: "" },
+    { key: "cameraNeeded", phrase: "Akses Kamera Diperlukan", status: "blank", comment: "" },
+    { key: "enableCamera", phrase: "Hidupkan akses kamera untuk membolehkan navigasi AR", status: "blank", comment: "" },
+    { key: "3d", phrase: "3D", status: "blank", comment: "" },
+    { key: "2d", phrase: "2D", status: "blank", comment: "" },
+  ]},
+  { id: "misc", label: "Misc", items: [
+    { key: "calibrate", phrase: "Tengarkan kompas titik biru anda pada bila-bila masa", status: "blank", comment: "" },
+    { key: "tiltInfo", phrase: "condongkan dan gerakkan telefon anda tiga kali seperti ini:", status: "blank", comment: "" },
+    { key: "welcome", phrase: "Untuk pengalaman terbaik menggunakan ciri ini sila ikuti garis panduan ini:", status: "blank", comment: "" },
+    { key: "wifiMsg", phrase: "Gunakan sambungan internet 4G atau 5G dan bukannya Wi-Fi.", status: "blank", comment: "" },
+    { key: "hotspotMsg", phrase: "Matikan hotspot peranti anda.", status: "blank", comment: "" },
+    { key: "bluetoothMsg", phrase: "Jangan sambungkan peranti anda ke peranti boleh pakai lain melalui Bluetooth.", status: "blank", comment: "" },
+    { key: "sessionId", phrase: "ID Sesi", status: "blank", comment: "" },
+    { key: "loadingData", phrase: "Memuatkan Data", status: "done", comment: "" },
+    { key: "chooseGate", phrase: "Pilih Pintu", status: "blank", comment: "" },
+    { key: "nearbyStation", phrase: "Destinasi Berdekatan", status: "blank", comment: "" },
+    { key: "routeTo", phrase: "Laluan ke %s", status: "blank", comment: "" },
+    { key: "bestAllPrefs", phrase: "Laluan terbaik ditunjukkan tidak semua keutamaan dipenuhi.", status: "blank", comment: "" },
+    { key: "someStopsClosed", phrase: "Sesetengah hentian dalam perjalanan anda mungkin ditutup", status: "blank", comment: "" },
+    { key: "closedAt", phrase: "Ditutup pada", status: "blank", comment: "" },
+    { key: "closedNow", phrase: "Ditutup sekarang,", status: "blank", comment: "" },
+    { key: "opensTomorrow", phrase: "dibuka besok", status: "blank", comment: "" },
+    { key: "opensOn", phrase: "dibuka pada", status: "blank", comment: "" },
+    { key: "at", phrase: "pada", status: "blank", comment: "" },
+    { key: "opensAt", phrase: "dibuka pada", status: "blank", comment: "" },
+    { key: "arriveFuture", phrase: "Anda akan tiba di destinasi anda", status: "blank", comment: "" },
+    { key: "then", phrase: "kemudian", status: "blank", comment: "" },
+    { key: "arrive", phrase: "tiba", status: "blank", comment: "" },
+    { key: "destination", phrase: "destinasi", status: "blank", comment: "" },
+    { key: "entering", phrase: "Memasuki %1$s", status: "blank", comment: "" },
+    { key: "offCampusArrive", phrase: "dan anda akan tiba di %s", status: "blank", comment: "" },
+    { key: "offCampusReach", phrase: "dan anda akan mencapai destinasi", status: "blank", comment: "" },
+    { key: "switchCampus", phrase: "Tukar", status: "blank", comment: "" },
+    { key: "switchCampusMsg", phrase: "\"POI, Tempat, Lokasi\" yang dikongsi berada di kampus yang berbeza adakah anda ingin bertukar untuk melihatnya?", status: "blank", comment: "" },
+    { key: "startForeground", phrase: "Dayakan perkhidmatan lokasi latar hadapan", status: "blank", comment: "" },
+    { key: "offlineMode", phrase: "Dayakan Luar Talian", status: "blank", comment: "" },
+    { key: "exitApp", phrase: "Adakah anda pasti ingin keluar?", status: "blank", comment: "" },
+    { key: "appName", phrase: "Aplikasi Saya Filament", status: "blank", comment: "" },
+  ]},
+  { id: "errorPage", label: "Error Page", items: [
+    { key: "mainMsg", phrase: "Ralat yang tidak dijangka berlaku", status: "blank", comment: "" },
+    { key: "btnText", phrase: "Cuba Semula", status: "blank", comment: "" },
+  ]},
+  { id: "dayAndTime", label: "Day & Time", items: [
+    { key: "days.Sunday", phrase: "Ahad", status: "done", comment: "" },
+    { key: "days.Monday", phrase: "Isnin", status: "done", comment: "" },
+    { key: "days.Tuesday", phrase: "Selasa", status: "done", comment: "" },
+    { key: "days.Wednesday", phrase: "Rabu", status: "done", comment: "" },
+    { key: "days.Thursday", phrase: "Khamis", status: "done", comment: "" },
+    { key: "days.Friday", phrase: "Jumaat", status: "done", comment: "" },
+    { key: "days.Saturday", phrase: "Sabtu", status: "blank", comment: "" },
+  ]},
+];
+
+let currentFilter = 'all';
+
+function setStatus(sectionId, key, newStatus) {
+  var section = SECTIONS.find(function(s){ return s.id === sectionId; });
+  if (!section) return;
+  var item = section.items.find(function(i){ return i.key === key; });
+  if (!item) return;
+  item.status = (item.status === newStatus) ? 'blank' : newStatus;
+  if (item.status !== 'fail') item.comment = '';
+  renderAll(); saveLocal();
+}
+
+function setComment(sectionId, key, val) {
+  var section = SECTIONS.find(function(s){ return s.id === sectionId; });
+  if (!section) return;
+  var item = section.items.find(function(i){ return i.key === key; });
+  if (item) { item.comment = val; saveLocal(); }
+}
+
+function renderAll() {
+  var searchVal = document.getElementById('searchBox').value.toLowerCase();
+  var container = document.getElementById('checklist');
+  container.innerHTML = '';
+  var counts = { done: 0, fail: 0, howto: 0, blank: 0, total: 0 };
+
+  SECTIONS.forEach(function(section) {
+    var secDiv = document.createElement('div');
+    secDiv.className = 'section';
+
+    var header = document.createElement('div');
+    header.className = 'section-header';
+    header.innerHTML = section.label + ' <span class="section-badge">' + section.items.length + ' phrases</span>';
+    secDiv.appendChild(header);
+
+    var anyVisible = false;
+    section.items.forEach(function(item) {
+      counts.total++; counts[item.status]++;
+      var matchesFilter = currentFilter === 'all' || item.status === currentFilter;
+      var matchesSearch = !searchVal || item.key.toLowerCase().includes(searchVal) || item.phrase.toLowerCase().includes(searchVal);
+      var visible = matchesFilter && matchesSearch;
+
+      var itemDiv = document.createElement('div');
+      itemDiv.className = 'item ' + item.status;
+      if (!visible) itemDiv.classList.add('hidden-item');
+      else anyVisible = true;
+
+      var main = document.createElement('div');
+      main.className = 'item-main';
+      main.innerHTML = '<div class="key-label">' + section.id + '.' + item.key + '</div><div class="phrase">' + item.phrase + '</div>';
+
+      var controls = document.createElement('div');
+      controls.className = 'item-controls';
+      ['done','fail','howto','blank'].forEach(function(s) {
+        var btn = document.createElement('button');
+        btn.className = 'status-btn' + (item.status === s ? ' active-' + s : '');
+        btn.textContent = s === 'howto' ? 'How to test' : s.charAt(0).toUpperCase() + s.slice(1);
+        btn.onclick = (function(sid,k,st){ return function(){ setStatus(sid,k,st); }; })(section.id, item.key, s);
+        controls.appendChild(btn);
+      });
+
+      var commentWrap = document.createElement('div');
+      commentWrap.className = 'comment-wrap' + (item.status === 'fail' ? ' visible' : '');
+      var commentInput = document.createElement('textarea');
+      commentInput.className = 'comment-input';
+      commentInput.placeholder = 'Why is it failing?';
+      commentInput.value = item.comment || '';
+      commentInput.oninput = (function(sid,k){ return function(e){ setComment(sid,k,e.target.value); }; })(section.id, item.key);
+      commentWrap.appendChild(commentInput);
+
+      var wrapper = document.createElement('div');
+      wrapper.style.cssText = 'display:flex;flex-direction:column;flex:1;';
+      wrapper.appendChild(main); wrapper.appendChild(commentWrap);
+      itemDiv.appendChild(wrapper); itemDiv.appendChild(controls);
+      secDiv.appendChild(itemDiv);
+    });
+
+    if (!anyVisible && (currentFilter !== 'all' || searchVal)) secDiv.style.display = 'none';
+    container.appendChild(secDiv);
+  });
+
+  var pct = function(n){ return counts.total ? Math.round(n/counts.total*100) : 0; };
+  document.getElementById('statsBar').innerHTML =
+    '<span class="s-done">✓ Done: ' + counts.done + ' (' + pct(counts.done) + '%)</span>' +
+    '<span class="s-fail">✗ Fail: ' + counts.fail + '</span>' +
+    '<span class="s-howto">? How to test: ' + counts.howto + '</span>' +
+    '<span class="s-blank">– Blank: ' + counts.blank + '</span>' +
+    '<span>Total: ' + counts.total + '</span>';
+}
+
+function setFilter(val, btn) {
+  currentFilter = val;
+  document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active'); renderAll();
+}
+function applyFilters() { renderAll(); }
+
+function saveLocal() {
+  try { localStorage.setItem('ms-checklist', JSON.stringify(SECTIONS)); } catch(e) {}
+}
+function loadLocal() {
+  try {
+    var saved = JSON.parse(localStorage.getItem('ms-checklist'));
+    if (!saved) return;
+    saved.forEach(function(savedSec) {
+      var sec = SECTIONS.find(function(s){ return s.id === savedSec.id; });
+      if (!sec) return;
+      savedSec.items.forEach(function(savedItem) {
+        var item = sec.items.find(function(i){ return i.key === savedItem.key; });
+        if (item) { item.status = savedItem.status; item.comment = savedItem.comment || ''; }
+      });
+    });
+  } catch(e) {}
+}
+function exportData() {
+  var data = SECTIONS.map(function(s){
+    return { id: s.id, label: s.label, items: s.items.map(function(i){ return { key: i.key, phrase: i.phrase, status: i.status, comment: i.comment }; }) };
+  });
+  var blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'ms-translation-checklist.json'; a.click();
+}
+function importClick() { document.getElementById('importFile').click(); }
+function importData(e) {
+  var file = e.target.files[0]; if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      var data = JSON.parse(ev.target.result);
+      data.forEach(function(savedSec) {
+        var sec = SECTIONS.find(function(s){ return s.id === savedSec.id; });
+        if (!sec) return;
+        savedSec.items.forEach(function(savedItem) {
+          var item = sec.items.find(function(i){ return i.key === savedItem.key; });
+          if (item) { item.status = savedItem.status; item.comment = savedItem.comment || ''; }
+        });
+      });
+      renderAll(); saveLocal();
+    } catch(err) { alert('Invalid JSON file.'); }
+  };
+  reader.readAsText(file); e.target.value = '';
+}
+
+loadLocal(); renderAll();
+</script>
+</body>
+</html>

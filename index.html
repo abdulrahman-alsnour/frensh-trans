@@ -131,12 +131,27 @@
 
   .hidden-item { display: none !important; }
   #searchBox { width: 200px; }
+  .lang-nav {
+    display: flex; gap: 8px; justify-content: center; margin-bottom: 20px;
+  }
+  .lang-btn {
+    padding: 5px 16px; border-radius: 6px; border: 1px solid #30363d;
+    cursor: pointer; font-size: 0.82rem; background: #161b22; color: #8b949e;
+    text-decoration: none; transition: all 0.15s;
+  }
+  .lang-btn:hover { border-color: #8b949e; color: #c9d1d9; }
+  .lang-btn.active { background: #1f3a5f; border-color: #58a6ff; color: #58a6ff; }
 </style>
 </head>
 <body>
 
 <h1>French Translation Checklist</h1>
 <p class="subtitle">Click a status button on any row to update it. Fail rows show a comment field.</p>
+
+<div class="lang-nav">
+  <a class="lang-btn active" href="index.html">🇫🇷 French</a>
+  <a class="lang-btn" href="ms-checklist.html">🇲🇾 Malay (BM)</a>
+</div>
 
 <div class="legend">
   <div class="legend-item"><div class="legend-dot" style="background:#2ea043"></div>Done</div>
